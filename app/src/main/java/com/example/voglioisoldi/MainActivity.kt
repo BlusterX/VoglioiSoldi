@@ -34,116 +34,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import com.example.voglioisoldi.ui.Navigation
 import com.example.voglioisoldi.ui.theme.VoglioiSoldiTheme
 
-
+//Al posto di Text("Screen 2") -> Text(stringResource(R.string.screen2_name))
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             VoglioiSoldiTheme {
-                MyMainScreen()
+                val navController = rememberNavController()
+                Navigation(navController)
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun MyTopBar() {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = "VOGLIOiSOLDI",
-                fontWeight = FontWeight.Bold,
-                fontSize = 30.sp
-            )
-        }
-    )
-}
 
-@Composable
-fun MyBottomBar() {
-    BottomAppBar(
-        containerColor = Color.White,
-        modifier = Modifier.height(120.dp)
-    ) {
-        IconButton(
-            onClick = { /* Account */ },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                Icons.Filled.AccountCircle,
-                contentDescription = "Account",
-                modifier = Modifier.size(50.dp)
-            )
-        }
-        IconButton(
-            onClick = { /* Transaction */ },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                Icons.Filled.ShoppingCart,
-                contentDescription = "Transactions",
-                modifier = Modifier.size(50.dp)
-            )
-        }
-        Spacer(Modifier.weight(1f, true))
-        IconButton(
-            onClick = { /* Settings */ },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                Icons.Filled.Settings,
-                contentDescription = "Settings",
-                modifier = Modifier.size(50.dp)
-            )
-        }
-        IconButton(
-            onClick = { /* Graphs */ },
-            modifier = Modifier.weight(1f)
-        ) {
-            Icon(
-                Icons.Filled.Star,
-                contentDescription = "Graphs",
-                modifier = Modifier.size(50.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun MyMainScreen() {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        topBar = { MyTopBar() },
-        //TODO: To insert in another Composable(button add)
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* Add */ },
-                modifier = Modifier.size(60.dp).offset(y = 45.dp),
-                containerColor = Color.Black,
-                contentColor = Color.White,
-                shape = CircleShape
-            ) {
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = "Add",
-                    modifier = Modifier.size(36.dp),
-                    tint = Color.White
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center,
-        bottomBar = { MyBottomBar() }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .background(Color.LightGray)
-        )
-    }
-}
 

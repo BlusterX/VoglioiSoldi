@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VoglioiSoldi</string>
+    <string name="screen1_name">Schermata1</string>
+    <string name="screen2_name">Schermata2</string>
+    <string name="screen3_name">Schermata3</string>
+    <string name="unknown_screen_name">Schermo Sconosciuto</string>
+    <string name="back_button_description">Vai Indietro</string>
+</resources>

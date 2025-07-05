@@ -1,12 +1,12 @@
 package com.example.voglioisoldi.ui
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.voglioisoldi.ui.screens.AccountScreen
+import com.example.voglioisoldi.ui.screens.AddTransactionScreen
 import com.example.voglioisoldi.ui.screens.DetailsScreen
 import com.example.voglioisoldi.ui.screens.GraphsScreen
 import com.example.voglioisoldi.ui.screens.HomeScreen
@@ -21,6 +21,7 @@ sealed interface SoldiRoute {
     @Serializable data object Settings : SoldiRoute
     @Serializable data object Transactions : SoldiRoute
     @Serializable data object Graphs : SoldiRoute
+    @Serializable data object AddTransaction : SoldiRoute
 }
 
 @Composable
@@ -47,6 +48,9 @@ fun Navigation(navController: NavHostController) {
         }
         composable<SoldiRoute.Graphs> {
             GraphsScreen(navController)
+        }
+        composable<SoldiRoute.AddTransaction> {
+            AddTransactionScreen(navController)
         }
     }
 }

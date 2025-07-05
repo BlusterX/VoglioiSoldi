@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
 
@@ -27,10 +28,9 @@ fun HomeScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopBar() },
-        //TODO: To insert in another Composable(button add)
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Add */ },
+                onClick = { navController.navigate(SoldiRoute.AddTransaction) },
                 modifier = Modifier.size(60.dp).offset(y = 45.dp),
                 containerColor = Color.Black,
                 contentColor = Color.White,

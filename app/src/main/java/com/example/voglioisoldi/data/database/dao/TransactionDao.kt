@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TransactionDao {
     @Query("SELECT * FROM `transaction` WHERE userId = :userId ORDER BY date DESC")
-    fun getTransactionsByUser(userId: Long): Flow<List<Transaction>>
+    fun getTransactionsByUser(userId: Int): Flow<List<Transaction>>
 
     @Insert
     suspend fun insertTransaction(transaction: Transaction)

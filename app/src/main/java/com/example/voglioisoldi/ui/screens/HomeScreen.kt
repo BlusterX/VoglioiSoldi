@@ -21,10 +21,15 @@ import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController
+) {
+    val viewModel: AuthViewModel = koinViewModel()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { TopBar() },

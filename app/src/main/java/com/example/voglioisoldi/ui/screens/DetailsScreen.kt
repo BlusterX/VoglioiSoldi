@@ -8,10 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun DetailsScreen(navController: NavController, soldiId: String) {
+fun DetailsScreen(
+    navController: NavController,
+    soldiId: String
+) {
+    val viewModel: AuthViewModel = koinViewModel()
     Scaffold(
         topBar = {
             TopBar(

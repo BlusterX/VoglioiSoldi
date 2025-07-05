@@ -32,9 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun AddTransactionScreen(navController: NavController) {
+fun AddTransactionScreen(
+    navController: NavController
+) {
+    val viewModel: AuthViewModel = koinViewModel()
     var amount by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var type by remember { mutableStateOf("Uscita") }

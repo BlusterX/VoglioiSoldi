@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -27,8 +28,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import org.koin.androidx.compose.koinViewModel
 
 data class SettingItem(
     val icon: ImageVector,
@@ -38,7 +42,11 @@ data class SettingItem(
 )
 
 @Composable
-fun SettingsScreen(navController: NavController) {
+fun SettingsScreen(
+    navController: NavController
+)
+{
+    val viewModel: AuthViewModel = koinViewModel()
     val settingsItems = listOf(
         SettingItem(Icons.Default.Settings, "Modifiche generali", "Modifiche nel tuo account") {
             // navController.navigate("general_settings")
@@ -51,6 +59,19 @@ fun SettingsScreen(navController: NavController) {
         },
         SettingItem(Icons.Default.Info, "App Info", "Visualizza le informazioni generali") {
             // navController.navigate("app_info")
+        },
+        //Item per l'uscita
+        SettingItem(
+            //Icon da modificare???
+            icon = Icons.Default.Clear,
+            title = "Logout",
+            description = "Esci dal tuo account"
+        ) {
+            // Va alla schermata di login, svuotando il back stack
+            navController.navigate(SoldiRoute.Login) {
+                popUpTo(0)
+                launchSingleTop = true
+            }
         }
     )
     Scaffold(

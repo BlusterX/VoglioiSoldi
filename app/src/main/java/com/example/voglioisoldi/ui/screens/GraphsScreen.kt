@@ -11,10 +11,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun GraphsScreen(navController: NavController) {
+fun GraphsScreen(
+    navController: NavController
+) {
+    val viewModel: AuthViewModel = koinViewModel()
     Scaffold(
         topBar = {
             TopBar(

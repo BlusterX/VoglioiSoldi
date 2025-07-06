@@ -46,13 +46,15 @@ fun Navigation(navController: NavHostController, startDestination: SoldiRoute) {
         }
         composable<SoldiRoute.Home> {
             HomeScreen(
-                navController = navController)
+                navController = navController
+            )
         }
         composable<SoldiRoute.Details> { backStackEntry ->
             val route = backStackEntry.toRoute<SoldiRoute.Details>()
             DetailsScreen(
                 navController = navController,
-                soldiId = route.soldiId)
+                soldiId = route.soldiId
+            )
         }
         composable<SoldiRoute.Account> {
             AccountScreen(

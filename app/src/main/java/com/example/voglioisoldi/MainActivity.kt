@@ -22,16 +22,25 @@ class MainActivity : ComponentActivity() {
         setContent {
             VoglioiSoldiTheme {
                 val navController = rememberNavController()
-                val loggedUser by sessionManager.getLoggedInUser().collectAsState(initial = null)
-                when (loggedUser) {
-                    //Se l'utente è loggato fa vedere una pagina di caricamento prima
-                    //di entrare nella home, perchè se no, si vedrebbe per mezzo secondo
-                    //lo screen di Login...
-                    null -> SplashScreen()
-                    else -> Navigation(
-                        navController = navController,
-                        startDestination = SoldiRoute.Home
-                    )
+                val loggedUserState =
+                    sessionManager.getLoggedInUser().collectAsState(initial = "LOADING")
+                val loggedUser = loggedUserState.value
+                when {
+                    loggedUser == "LOADING" -> {
+                        SplashScreen()
+                    }
+                    loggedUser.isNullOrBlank() -> {
+                        Navigation(
+                            navController = navController,
+                            startDestination = SoldiRoute.Login
+                        )
+                    }
+                    else -> {
+                        Navigation(
+                            navController = navController,
+                            startDestination = SoldiRoute.Home
+                        )
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 val Context.dataStore by preferencesDataStore(name = "session_prefs")
+
 //Da spostare in un altro package????
 class SessionManager(private val context: Context) {
     companion object {

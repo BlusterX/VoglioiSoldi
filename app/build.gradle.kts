@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.androidx.navigation.runtime.android)
 
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)

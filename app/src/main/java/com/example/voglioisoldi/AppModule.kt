@@ -2,6 +2,7 @@ package com.example.voglioisoldi
 
 import androidx.room.Room
 import com.example.voglioisoldi.data.database.AppDatabase
+import com.example.voglioisoldi.data.repositories.TransactionRepository
 import com.example.voglioisoldi.data.repositories.UserRepository
 import com.example.voglioisoldi.data.session.SessionManager
 import com.example.voglioisoldi.ui.viewmodel.AddTransactionViewModel
@@ -19,7 +20,9 @@ val appModule = module {
         ).build()
     }
     single { get<AppDatabase>().userDAO() }
+    single { get<AppDatabase>().transactionDao() }
     single { UserRepository(get()) }
+    single { TransactionRepository(get()) }
     single { SessionManager(androidContext()) }
 
     viewModel { AuthViewModel(get(), get()) }

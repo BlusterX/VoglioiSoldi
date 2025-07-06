@@ -20,4 +20,7 @@ interface UserDao {
     //Ci dice se l'utente già esiste in fase di registrazione
     @Query("SELECT COUNT(*) FROM user WHERE username = :username OR email = :email")
     suspend fun existsUser(username: String, email: String): Int
+
+    @Query("SELECT * FROM user WHERE username = :username")
+    suspend fun getUserByUsername(username: String): User?
 }

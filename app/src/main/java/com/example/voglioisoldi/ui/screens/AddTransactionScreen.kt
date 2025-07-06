@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.util.rememberCurrentUserId
 import com.example.voglioisoldi.ui.viewmodel.AddTransactionViewModel
 import com.example.voglioisoldi.ui.viewmodel.TransactionType
 import org.koin.androidx.compose.koinViewModel
@@ -43,11 +44,10 @@ import org.koin.androidx.compose.koinViewModel
 fun AddTransactionScreen(
     navController: NavController
 ) {
-    println("SONO IN ADD TRANSACTION")
     val viewModel: AddTransactionViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
     val actions = viewModel.actions
-
+    val userId = rememberCurrentUserId()
     Scaffold(
         topBar = {
             TopBar(
@@ -144,7 +144,9 @@ fun AddTransactionScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        actions.saveTransaction(userId = 1) // TODO: Ottenere l'ID dell'utente corrente
+                        if (userId != null) {
+                            actions.saveTransaction(userId)
+                        }
                     }
                 ) {
                     Text("Sì")

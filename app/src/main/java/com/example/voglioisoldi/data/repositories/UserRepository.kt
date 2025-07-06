@@ -17,6 +17,10 @@ class UserRepository(
         val passwordHash = hashPassword(password)
         return dao.getUser(username, passwordHash)
     }
+
+    suspend fun getUserByUsername(username: String): User? {
+        return dao.getUserByUsername(username)
+    }
 }
 
 //TODO: Da spostare in una util??

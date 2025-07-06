@@ -41,9 +41,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AddTransactionScreen(
-    navController: NavController,
-    viewModel: AddTransactionViewModel = koinViewModel()
+    navController: NavController
 ) {
+    println("SONO IN ADD TRANSACTION")
+    val viewModel: AddTransactionViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
     val actions = viewModel.actions
 

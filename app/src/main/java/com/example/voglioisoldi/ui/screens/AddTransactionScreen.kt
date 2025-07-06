@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,8 +20,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,18 +35,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
-import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import com.example.voglioisoldi.ui.viewmodel.AddTransactionViewModel
+import com.example.voglioisoldi.ui.viewmodel.TransactionType
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AddTransactionScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: AddTransactionViewModel = koinViewModel()
 ) {
-    val viewModel: AuthViewModel = koinViewModel()
-    var amount by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var type by remember { mutableStateOf("Uscita") }
-    var selectedCategory by remember { mutableStateOf("Spesa") }
+    val state by viewModel.state.collectAsState()
+    val actions = viewModel.actions
 
     Scaffold(
         topBar = {
@@ -66,16 +68,16 @@ fun AddTransactionScreen(
             Text("Aggiungi Transazione", style = MaterialTheme.typography.headlineSmall)
             // Importo
             OutlinedTextField(
-                value = amount,
-                onValueChange = { amount = it },
+                value = state.amount,
+                onValueChange = actions::setAmount,
                 label = { Text("Importo (€)") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             // Descrizione
             OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
+                value = state.description,
+                onValueChange = actions::setDescription,
                 label = { Text("Descrizione") },
                 singleLine = true
             )
@@ -89,20 +91,20 @@ fun AddTransactionScreen(
                 //TODO: Bottoni semplicati??
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { type = "Entrata" }
+                    modifier = Modifier.clickable { actions.setType(TransactionType.ENTRATA) }
                 ) {
                     RadioButton(
-                        selected = type == "Entrata",
+                        selected = state.type == TransactionType.ENTRATA,
                         onClick = null
                     )
                     Text("Entrata")
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { type = "Uscita" }
+                    modifier = Modifier.clickable { actions.setType(TransactionType.USCITA) }
                 ) {
                     RadioButton(
-                        selected = type == "Uscita",
+                        selected = state.type == TransactionType.USCITA,
                         onClick = null
                     )
                     Text("Uscita")
@@ -110,23 +112,51 @@ fun AddTransactionScreen(
             }
             //TODO: Richiama composable in base al tipo
             DropdownMenuBox(
-                selected = selectedCategory,
-                items = listOf("Spesa", "Stipendio", "Trasporti", "Altro"),
-                onItemSelected = { selectedCategory = it }
+                selected = state.selectedCategory,
+                items = state.availableCategories,
+                onItemSelected = actions::setCategory
             )
             Spacer(modifier = Modifier.weight(1f))
             Button(
-                onClick = {
-                    //TODO: Una volta premuto salva deve dare un pop-up di conferma
-                        //Se preme "si" torna alla Home, in caso resta nella pagina
-                        // e non succede niente
-                    navController.popBackStack()
-                },
+                onClick = actions::showConfirmDialog,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Salva")
             }
         }
+    }
+
+    // TODO: gestione errori?
+    if (state.showConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = actions::hideConfirmDialog,
+            title = { Text("Conferma Transazione") },
+            text = {
+                Column {
+                    Text("Sei sicuro di voler salvare la seguente transazione?")
+                    Text("Tipo: ${state.type.name.lowercase().replaceFirstChar { it.uppercase() }}")
+                    Text("Importo: €${state.amount}")
+                    Text("Categoria: ${state.selectedCategory}")
+                    Text("Descrizione: ${state.description}")
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        actions.saveTransaction(userId = 1) // TODO: Ottenere l'ID dell'utente corrente
+                    }
+                ) {
+                    Text("Sì")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = actions::hideConfirmDialog
+                ) {
+                    Text("No")
+                }
+            }
+        )
     }
 }
 

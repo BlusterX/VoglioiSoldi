@@ -4,6 +4,7 @@ import androidx.room.Room
 import com.example.voglioisoldi.data.database.AppDatabase
 import com.example.voglioisoldi.data.repositories.UserRepository
 import com.example.voglioisoldi.data.session.SessionManager
+import com.example.voglioisoldi.ui.viewmodel.AddTransactionViewModel
 import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -20,5 +21,7 @@ val appModule = module {
     single { get<AppDatabase>().userDAO() }
     single { UserRepository(get()) }
     single { SessionManager(androidContext()) }
+
     viewModel { AuthViewModel(get(), get()) }
+    viewModel { AddTransactionViewModel(get()) }
 }

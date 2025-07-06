@@ -7,9 +7,7 @@ import java.security.MessageDigest
 class UserRepository(
     private val dao: UserDao
 ) {
-    suspend fun insertUser(user: User) {
-        dao.insertUser(user)
-    }
+    suspend fun insertUser(user: User) = dao.insertUser(user)
 
     suspend fun userExists(username: String, email: String): Boolean {
         return dao.existsUser(username, email) > 0
@@ -20,6 +18,7 @@ class UserRepository(
         return dao.getUser(username, passwordHash)
     }
 }
+
 //TODO: Da spostare in una util??
 fun hashPassword(password: String): String {
     return MessageDigest.getInstance("SHA-256")

@@ -19,9 +19,6 @@ data class AddTransactionState(
     val showErrorDialog: Boolean = false,
     val errorMessage: String = ""
 ) {
-    //TODO: complete submit control
-    val canSubmit get() = amount.isNotBlank() && amount.toDoubleOrNull() != null
-
     val availableCategories: List<String>
         get() = when (type) {
             TransactionType.ENTRATA -> listOf("Stipendio", "Bonus", "Vendita", "Altro")
@@ -97,11 +94,15 @@ class AddTransactionViewModel(
 
         override fun showConfirmDialog() {
             val currentState = _state.value
-            if (currentState.canSubmit) {
-                _state.update { it.copy(showConfirmDialog = true) }
+            val isAmountValid = currentState.amount.isNotBlank() && currentState.amount.toDoubleOrNull() != null
+            val isDescriptionValid = currentState.description.isNotBlank()
+
+            if (!isAmountValid) {
+                showErrorDialog("Inserisci un importo valido.")
+            } else if (!isDescriptionValid) {
+                showErrorDialog("La descrizione è obbligatoria.")
             } else {
-                val errorMessage = "Inserisci un importo valido."
-                showErrorDialog(errorMessage)
+                _state.update { it.copy(showConfirmDialog = true) }
             }
         }
 

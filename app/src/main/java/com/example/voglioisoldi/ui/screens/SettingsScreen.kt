@@ -21,8 +21,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -31,8 +37,9 @@ import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.composables.BottomBar
 import com.example.voglioisoldi.ui.composables.TopBar
-import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import com.example.voglioisoldi.ui.viewmodel.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
+
 
 data class SettingItem(
     val icon: ImageVector,
@@ -40,62 +47,74 @@ data class SettingItem(
     val description: String,
     val onClick: () -> Unit
 )
-
 @Composable
 fun SettingsScreen(
-    navController: NavController
-)
-{
-    val viewModel: AuthViewModel = koinViewModel()
-    val settingsItems = listOf(
-        SettingItem(Icons.Default.Settings, "Modifiche generali", "Modifiche nel tuo account") {
-            // navController.navigate("general_settings")
-        },
-        SettingItem(Icons.Default.AccountBox, "Account", "Aggiungi o modifica il tuo account") {
-            // navController.navigate("accounts")
-        },
-        SettingItem(Icons.Default.Notifications, "Notifiche", "Gestisci le tue notifiche") {
-            // navController.navigate("notifications")
-        },
-        SettingItem(Icons.Default.Info, "App Info", "Visualizza le informazioni generali") {
-            // navController.navigate("app_info")
-        },
-        //Item per l'uscita
-        SettingItem(
-            //Icon da modificare???
-            icon = Icons.Default.Clear,
-            title = "Logout",
-            description = "Esci dal tuo account"
-        ) {
-            // Va alla schermata di login, svuotando il back stack
+    navController: NavController,
+    viewModel: SettingsViewModel = koinViewModel()
+) {
+    val logoutDone by viewModel.logoutDone.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(logoutDone) {
+        if (logoutDone) {
             navController.navigate(SoldiRoute.Login) {
                 popUpTo(0)
                 launchSingleTop = true
             }
+            viewModel.resetLogoutFlag()
         }
+    }
+    LaunchedEffect(errorMessage) {
+        errorMessage?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.resetError()
+        }
+    }
+    SettingsContent(
+        navController = navController,
+        onLogout = { viewModel.logout() },
+        snackbarHostState = snackbarHostState
     )
+}
+
+@Composable
+fun SettingsContent(
+    navController: NavController,
+    onLogout: () -> Unit,
+    snackbarHostState: SnackbarHostState
+) {
+    val settingsItems = listOf(
+        SettingItem(Icons.Default.Settings, "Modifiche generali", "Modifiche nel tuo account") {/*Es SoldiRoute.GeneralSettings*/},
+        SettingItem(Icons.Default.AccountBox, "Account", "Aggiungi o modifica il tuo account") {},
+        SettingItem(Icons.Default.Notifications, "Notifiche", "Gestisci le tue notifiche") {},
+        SettingItem(Icons.Default.Info, "App Info", "Visualizza le informazioni generali") {},
+        SettingItem(Icons.Default.Clear, "Logout", "Esci dal tuo account", onLogout)
+    )
+
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopBar(
-                showBackButton = true, onBackClick = { navController.popBackStack() }
+                showBackButton = true,
+                onBackClick = { navController.popBackStack() }
             )
         },
         bottomBar = {
             BottomBar(navController)
         }
-    ) {
-        paddingValues ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
-                settingsItems.forEach { item ->
-                    SettingRow(item)
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
+            settingsItems.forEach { item ->
+                SettingRow(item)
+                Spacer(modifier = Modifier.height(12.dp))
             }
+        }
     }
 }
 

@@ -19,6 +19,7 @@ data class AuthUiState(
     val errorMessage: String? = null,
     val isLoading: Boolean = false,
     val loginSuccess: Boolean = false,
+    val registeredUserId: Int? = null,
     val registrationSuccess: Boolean = false
 )
 
@@ -26,6 +27,7 @@ class AuthViewModel(
     private val userRepository: UserRepository,
     private val sessionManager: SessionManager
 ): ViewModel() {
+
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState
@@ -130,7 +132,14 @@ class AuthViewModel(
                 email = state.email
             )
             userRepository.insertUser(user)
-            _uiState.value = state.copy(registrationSuccess = true, errorMessage = null, isLoading = false)
+            sessionManager.saveLoggedInUser(state.username)
+            val registeredUser = userRepository.getUserByUsername(state.username)
+            _uiState.value = state.copy(
+                registrationSuccess = true,
+                errorMessage = null,
+                isLoading = false,
+                registeredUserId = registeredUser?.id
+            )
         }
     }
 

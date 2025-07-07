@@ -35,10 +35,10 @@ fun RegistrationScreen(
     val viewModel: AuthViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.registrationSuccess) {
-        LaunchedEffect(Unit) {
+    LaunchedEffect(uiState.registrationSuccess) {
+        if (uiState.registrationSuccess) {
             viewModel.resetRegistrationFlag()
-            navController.navigate(SoldiRoute.Login)
+            navController.navigate(SoldiRoute.AddAccount)
         }
     }
     Column(

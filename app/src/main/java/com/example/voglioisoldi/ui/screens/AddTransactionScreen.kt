@@ -1,23 +1,21 @@
-package com.example.voglioisoldi.ui.screens
-
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -30,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -64,55 +63,57 @@ fun AddTransactionScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(22.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Aggiungi Transazione", style = MaterialTheme.typography.headlineSmall)
-            // Importo
+            Text(
+                "Aggiungi Transazione",
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
             OutlinedTextField(
                 value = state.amount,
                 onValueChange = actions::setAmount,
                 label = { Text("Importo (€)") },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.fillMaxWidth()
             )
-            // Descrizione
             OutlinedTextField(
                 value = state.description,
                 onValueChange = actions::setDescription,
                 label = { Text("Descrizione") },
-                singleLine = true
-            )
-            // Tipo (Entrata / Uscita)
-            Text("Tipo:", style = MaterialTheme.typography.labelLarge)
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth()
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                //TODO: Bottoni semplicati??
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { actions.setType(TransactionType.ENTRATA) }
+                Button(
+                    onClick = { actions.setType(TransactionType.ENTRATA) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (state.type == TransactionType.ENTRATA) Color(0xFF81C784) else MaterialTheme.colorScheme.surface
+                    ),
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier.padding(end = 8.dp)
                 ) {
-                    RadioButton(
-                        selected = state.type == TransactionType.ENTRATA,
-                        onClick = null
-                    )
-                    Text("Entrata")
+                    Text("Entrata", color = if (state.type == TransactionType.ENTRATA) Color.White else Color.Black)
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.clickable { actions.setType(TransactionType.USCITA) }
+                Button(
+                    onClick = { actions.setType(TransactionType.USCITA) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (state.type == TransactionType.USCITA) Color(0xFFE57373) else MaterialTheme.colorScheme.surface
+                    ),
+                    shape = MaterialTheme.shapes.small
                 ) {
-                    RadioButton(
-                        selected = state.type == TransactionType.USCITA,
-                        onClick = null
-                    )
-                    Text("Uscita")
+                    Text("Uscita", color = if (state.type == TransactionType.USCITA) Color.White else Color.Black)
                 }
             }
-            //TODO: Richiama composable in base al tipo
             DropdownMenuBox(
                 selected = state.selectedCategory,
                 items = state.availableCategories,
@@ -121,9 +122,15 @@ fun AddTransactionScreen(
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = actions::showConfirmDialog,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+                shape = MaterialTheme.shapes.medium
             ) {
-                Text("Salva")
+                Text(
+                    "Salva",
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                )
             }
         }
     }
@@ -179,8 +186,6 @@ fun AddTransactionScreen(
     }
 }
 
-
-//TODO: in base alla "Tipo" deve essere un menu a tendina differente
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DropdownMenuBox(

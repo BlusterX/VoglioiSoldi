@@ -16,4 +16,8 @@ class TransactionRepository(
     fun getTransactionsByUser(userId: Int): Flow<List<Transaction>> {
         return dao.getTransactionsByUser(userId)
     }
+
+    suspend fun getTransactionById(id: Int): Transaction? {
+        return dao.getTransactionById(id)
+    }
 }

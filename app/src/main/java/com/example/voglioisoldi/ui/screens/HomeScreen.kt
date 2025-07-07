@@ -64,7 +64,7 @@ fun HomeScreen(
                 .background(Color.LightGray)
         ) {
             BalanceSummary(uiState.transactions)
-            RecentTransactionsList(uiState.transactions)
+            RecentTransactionsList(uiState.transactions, navController)
         }
     }
 }

@@ -21,4 +21,7 @@ interface TransactionDao {
 
     @Delete
     suspend fun deleteTransaction(transaction: Transaction)
+
+    @Query("SELECT * FROM `transaction` WHERE id = :id LIMIT 1")
+    suspend fun getTransactionById(id: Int): Transaction?
 }

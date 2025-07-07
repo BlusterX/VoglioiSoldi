@@ -21,7 +21,7 @@ sealed interface SoldiRoute {
     @Serializable data object Login : SoldiRoute
     @Serializable data object Registration : SoldiRoute
     @Serializable data object Home : SoldiRoute
-    @Serializable data class Details(val soldiId: String) : SoldiRoute
+    @Serializable data class Details(val soldiId: Int) : SoldiRoute
     @Serializable data object Account : SoldiRoute
     @Serializable data object Settings : SoldiRoute
     @Serializable data object Transactions : SoldiRoute

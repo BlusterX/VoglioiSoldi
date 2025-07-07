@@ -9,6 +9,7 @@ import com.example.voglioisoldi.data.session.SessionManager
 import com.example.voglioisoldi.ui.viewmodel.AccountViewModel
 import com.example.voglioisoldi.ui.viewmodel.AddTransactionViewModel
 import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
+import com.example.voglioisoldi.ui.viewmodel.DetailsViewModel
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
 import com.example.voglioisoldi.ui.viewmodel.SettingsViewModel
 import org.koin.android.ext.koin.androidContext
@@ -37,4 +38,5 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
     viewModel { AccountViewModel(get()) }
+    viewModel { DetailsViewModel(get()) }
 }

@@ -1,5 +1,6 @@
 package com.example.voglioisoldi.ui.composables
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,7 +26,7 @@ import java.util.Locale
 
 //Da spostare in un util home??
 @Composable
-fun TransactionCard(transaction: Transaction) {
+fun TransactionCard(transaction: Transaction, onClick: () -> Unit) {
     val isNegative = transaction.amount < 0
     val amountColor = if (isNegative) Color(0xFFE57373) else Color(0xFF81C784)
     Card(
@@ -34,7 +35,7 @@ fun TransactionCard(transaction: Transaction) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }
     ) {
         Row(
             Modifier

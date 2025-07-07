@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.voglioisoldi.data.database.entities.Transaction
+import com.example.voglioisoldi.ui.SoldiRoute
 
 @Composable
-fun RecentTransactionsList(transactions: List<Transaction>) {
+fun RecentTransactionsList(transactions: List<Transaction>, navController: NavController) {
     Column(
         modifier = Modifier.padding(16.dp)
     ) {
@@ -28,7 +30,10 @@ fun RecentTransactionsList(transactions: List<Transaction>) {
         } else {
             //Fa  vedere le ultime 5 transazioni, DA CAMBIARE???
             transactions.take(5).forEach { transaction ->
-                TransactionCard(transaction)
+                TransactionCard(transaction){
+                    //Una volta cliccata la transazione apre il dettaglio di essa
+                    navController.navigate(SoldiRoute.Details(transaction.id))
+                }
                 Spacer(modifier = Modifier.height(10.dp))
             }
         }

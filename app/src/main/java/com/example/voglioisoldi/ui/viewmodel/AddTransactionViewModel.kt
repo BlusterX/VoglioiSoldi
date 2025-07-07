@@ -16,6 +16,8 @@ data class AddTransactionState(
     val type: TransactionType = TransactionType.USCITA,
     val selectedCategory: String = "Spesa",
     val showConfirmDialog: Boolean = false,
+    val showErrorDialog: Boolean = false,
+    val errorMessage: String = ""
 ) {
     //TODO: complete submit control
     val canSubmit get() = amount.isNotBlank() && amount.toDoubleOrNull() != null
@@ -55,6 +57,8 @@ interface AddTransactionActions {
     fun setCategory(category: String)
     fun showConfirmDialog()
     fun hideConfirmDialog()
+    fun showErrorDialog(message: String)
+    fun hideErrorDialog()
     fun saveTransaction(userId: Int)
 }
 
@@ -92,19 +96,53 @@ class AddTransactionViewModel(
         }
 
         override fun showConfirmDialog() {
-            _state.update { it.copy(showConfirmDialog = true) }
+            val currentState = _state.value
+            if (currentState.canSubmit) {
+                _state.update { it.copy(showConfirmDialog = true) }
+            } else {
+                val errorMessage = "Inserisci un importo valido."
+                showErrorDialog(errorMessage)
+            }
         }
 
         override fun hideConfirmDialog() {
             _state.update { it.copy(showConfirmDialog = false) }
         }
 
+        override fun showErrorDialog(message: String) {
+            _state.update {
+                it.copy(
+                    showErrorDialog = true,
+                    errorMessage = message
+                )
+            }
+        }
+
+        override fun hideErrorDialog() {
+            _state.update {
+                it.copy(
+                    showErrorDialog = false,
+                    errorMessage = ""
+                )
+            }
+        }
+
         override fun saveTransaction(userId: Int) {
             viewModelScope.launch {
-                val currentState = _state.value
-                val transaction = currentState.toTransaction(userId)
-                transactionRepository.insertTransaction(transaction)
-                _state.update { it.copy(showConfirmDialog = false) }
+                try {
+                    val currentState = _state.value
+                    val transaction = currentState.toTransaction(userId)
+                    transactionRepository.insertTransaction(transaction)
+                    _state.update { it.copy(showConfirmDialog = false) }
+                } catch (e: Exception) {
+                    _state.update {
+                        it.copy(
+                            showConfirmDialog = false,
+                            showErrorDialog = true,
+                            errorMessage = "Errore durante il salvataggio della transazione: ${e.message ?: "Errore sconosciuto"}"
+                        )
+                    }
+                }
             }
         }
     }

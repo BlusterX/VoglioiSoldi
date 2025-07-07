@@ -48,6 +48,7 @@ fun AddTransactionScreen(
     val state by viewModel.state.collectAsState()
     val actions = viewModel.actions
     val userId = rememberCurrentUserId()
+
     Scaffold(
         topBar = {
             TopBar(
@@ -127,14 +128,13 @@ fun AddTransactionScreen(
         }
     }
 
-    // TODO: gestione errori?
     if (state.showConfirmDialog) {
         AlertDialog(
             onDismissRequest = actions::hideConfirmDialog,
             title = { Text("Conferma Transazione") },
             text = {
                 Column {
-                    Text("Sei sicuro di voler salvare la seguente transazione?")
+                    Text("Sei sicuro di voler salvare la seguente transazione?\n")
                     Text("Tipo: ${state.type.name.lowercase().replaceFirstChar { it.uppercase() }}")
                     Text("Importo: €${state.amount}")
                     Text("Categoria: ${state.selectedCategory}")
@@ -146,6 +146,7 @@ fun AddTransactionScreen(
                     onClick = {
                         if (userId != null) {
                             actions.saveTransaction(userId)
+                            navController.popBackStack()
                         }
                     }
                 ) {
@@ -157,6 +158,21 @@ fun AddTransactionScreen(
                     onClick = actions::hideConfirmDialog
                 ) {
                     Text("No")
+                }
+            }
+        )
+    }
+
+    if (state.showErrorDialog) {
+        AlertDialog(
+            onDismissRequest = actions::hideErrorDialog,
+            title = { Text("Errore") },
+            text = { Text(state.errorMessage) },
+            confirmButton = {
+                TextButton(
+                    onClick = actions::hideErrorDialog
+                ) {
+                    Text("OK")
                 }
             }
         )

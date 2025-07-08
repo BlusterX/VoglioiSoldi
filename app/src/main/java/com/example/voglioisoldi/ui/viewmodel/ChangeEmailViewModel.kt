@@ -49,14 +49,21 @@ class ChangeEmailViewModel(
         }
 
         override fun updateEmail(userId: Int, onSuccess: () -> Unit) {
-            if (!isValidEmail(_state.value.newEmail)) {
+            val currentState = _state.value
+
+            if (!isValidEmail(currentState.newEmail)) {
                 _state.update { it.copy(errorMessage = "Formato email non valido.") }
+                return
+            }
+
+            if (currentState.newEmail == currentState.currentEmail) {
+                _state.update { it.copy(errorMessage = "La nuova email inserita è uguale a quella attuale.") }
                 return
             }
 
             viewModelScope.launch {
                 try {
-                    val result = userRepository.updateUserEmail(userId, _state.value.newEmail)
+                    val result = userRepository.updateUserEmail(userId, currentState.newEmail)
                     if (result.isSuccess) {
                         _state.update {
                             it.copy(

@@ -100,6 +100,18 @@ class ChangePasswordViewModel(
                 return
             }
 
+            if (currentState.newPassword == currentState.currentPassword) {
+                _state.update {
+                    it.copy(
+                        errorMessage = "La nuova password inserita è uguale a quella attuale.",
+                        currentPasswordError = false,
+                        newPasswordError = true,
+                        confirmPasswordError = false
+                    )
+                }
+                return
+            }
+
             viewModelScope.launch {
                 try {
                     val result = userRepository.updateUserPassword(

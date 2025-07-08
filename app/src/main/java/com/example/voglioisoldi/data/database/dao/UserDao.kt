@@ -23,4 +23,19 @@ interface UserDao {
 
     @Query("SELECT * FROM user WHERE username = :username")
     suspend fun getUserByUsername(username: String): User?
+
+    @Query("SELECT * FROM user WHERE id = :userId")
+    suspend fun getUserById(userId: Int): User?
+
+    @Query("UPDATE user SET email = :newEmail WHERE id = :userId")
+    suspend fun updateUserEmail(userId: Int, newEmail: String)
+
+    @Query("UPDATE user SET passwordHash = :newPasswordHash WHERE id = :userId")
+    suspend fun updateUserPassword(userId: Int, newPasswordHash: String)
+
+    @Query("DELETE FROM user WHERE id = :userId")
+    suspend fun deleteUser(userId: Int)
+
+    @Query("SELECT COUNT(*) FROM user WHERE email = :email AND id != :userId")
+    suspend fun isEmailTaken(email: String, userId: Int): Int
 }

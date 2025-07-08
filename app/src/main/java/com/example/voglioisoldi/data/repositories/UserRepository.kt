@@ -21,6 +21,54 @@ class UserRepository(
     suspend fun getUserByUsername(username: String): User? {
         return dao.getUserByUsername(username)
     }
+
+    suspend fun getUserById(userId: Int): User? {
+        return dao.getUserById(userId)
+    }
+
+    suspend fun updateUserEmail(userId: Int, newEmail: String): Result<Unit> {
+        return try {
+            // Verifica se l'email è già utilizzata da un altro utente
+            if (dao.isEmailTaken(newEmail, userId) > 0) {
+                Result.failure(Exception("Email già presente nel sistema."))
+            } else {
+                dao.updateUserEmail(userId, newEmail)
+                Result.success(Unit)
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun updateUserPassword(userId: Int, currentPassword: String, newPassword: String): Result<Unit> {
+        return try {
+            // Verifica la password corrente
+            val user = dao.getUserById(userId)
+            if (user == null) {
+                Result.failure(Exception("Utente non trovato."))
+            } else {
+                val currentPasswordHash = hashPassword(currentPassword)
+                if (user.passwordHash != currentPasswordHash) {
+                    Result.failure(Exception("Password attuale non corretta."))
+                } else {
+                    val newPasswordHash = hashPassword(newPassword)
+                    dao.updateUserPassword(userId, newPasswordHash)
+                    Result.success(Unit)
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun deleteUser(userId: Int): Result<Unit> {
+        return try {
+            dao.deleteUser(userId)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
 
 //TODO: Da spostare in una util??

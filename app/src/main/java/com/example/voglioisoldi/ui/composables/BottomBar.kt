@@ -26,7 +26,7 @@ fun BottomBar(navController: NavController) {
         modifier = Modifier.height(120.dp)
     ) {
         IconButton(
-            onClick = { navController.navigate(SoldiRoute.Account) },
+            onClick = { navController.navigate(SoldiRoute.Profile) },
             modifier = Modifier.weight(1f)
         ) {
             Icon(

@@ -85,10 +85,12 @@ fun SettingsContent(
     snackbarHostState: SnackbarHostState
 ) {
     val settingsItems = listOf(
-        SettingItem(Icons.Default.Settings, "Modifiche generali", "Modifiche nel tuo account") {/*Es SoldiRoute.GeneralSettings*/},
+        SettingItem(Icons.Default.Settings, "Modifiche generali", "Modifiche nel tuo account") {},
         SettingItem(Icons.Default.AccountBox, "Account", "Aggiungi o modifica il tuo account") {},
         SettingItem(Icons.Default.Notifications, "Notifiche", "Gestisci le tue notifiche") {},
-        SettingItem(Icons.Default.Info, "App Info", "Visualizza le informazioni generali") {},
+        SettingItem(Icons.Default.Info, "App Info", "Visualizza le informazioni generali") {
+            navController.navigate(SoldiRoute.AppInfo)
+        },
         SettingItem(Icons.Default.Clear, "Logout", "Esci dal tuo account", onLogout)
     )
 

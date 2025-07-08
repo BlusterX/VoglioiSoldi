@@ -22,5 +22,6 @@ data class Account(
     val id: Int = 0,
     val type: String,
     val balance: Double,
-    val userId: Int
+    val userId: Int,
+    val createdAt: Long = System.currentTimeMillis()
 )

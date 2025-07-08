@@ -13,6 +13,7 @@ import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
 import com.example.voglioisoldi.ui.viewmodel.ChangeEmailViewModel
 import com.example.voglioisoldi.ui.viewmodel.ChangePasswordViewModel
 import com.example.voglioisoldi.ui.viewmodel.DetailsViewModel
+import com.example.voglioisoldi.ui.viewmodel.GraphsViewModel
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
 import com.example.voglioisoldi.ui.viewmodel.NotificationViewModel
 import com.example.voglioisoldi.ui.viewmodel.ProfileViewModel
@@ -50,4 +51,5 @@ val appModule = module {
     viewModel { ProfileViewModel(get()) }
     viewModel { ChangeEmailViewModel(get()) }
     viewModel { ChangePasswordViewModel(get()) }
+    viewModel { GraphsViewModel(get(), get(), get(), get()) }
 }

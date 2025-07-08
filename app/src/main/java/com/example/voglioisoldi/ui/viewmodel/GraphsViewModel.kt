@@ -75,22 +75,38 @@ class GraphsViewModel(
             }
         }
     }
-    //Posso raggruppare tutti e 3 i calcoli in 1???
+
     private fun computeDailyPoints(transactions: List<Transaction>, account: Account): List<ChartPoint> {
         val today = LocalDate.now()
-        val dayStart = today.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val initialBalance = getStartingBalanceForPeriod(account, transactions, dayStart)
-        val txByHour = transactions
-            .filter { it.date.toLocalDate() == today }
-            .groupBy { it.date.toLocalDateTime().hour }
-
+        val accountCreation = account.createdAt.toLocalDateTime()
+        val creationHourDecimal = accountCreation.hour + accountCreation.minute / 60f
         val points = mutableListOf<ChartPoint>()
-        var balance = initialBalance.toFloat()
-        points.add(ChartPoint(0f, balance))
-        for (hour in 0..23) {
-            val sum = txByHour[hour]?.sumOf { it.amount } ?: 0.0
-            balance += sum.toFloat()
-            points.add(ChartPoint((hour + 1).toFloat(), balance))
+        if (accountCreation.toLocalDate() == today) {
+            points.add(ChartPoint(0f, 0f))
+            val beforeCreation = creationHourDecimal - 0.01f
+            if (beforeCreation > 0f) points.add(ChartPoint(beforeCreation, 0f))
+            points.add(ChartPoint(creationHourDecimal, account.balance.toFloat()))
+            var balance = account.balance.toFloat()
+            val txByHour = transactions
+                .filter { it.date.toLocalDate() == today && it.date.toLocalDateTime().hour + it.date.toLocalDateTime().minute / 60f > creationHourDecimal }
+                .groupBy { it.date.toLocalDateTime().hour }
+            for (hour in (creationHourDecimal.toInt() + 1)..23) {
+                val sum = txByHour[hour]?.sumOf { it.amount } ?: 0.0
+                balance += sum.toFloat()
+                points.add(ChartPoint(hour.toFloat(), balance))
+            }
+        } else {
+            val midnightMillis = today.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val saldoIniziale = account.balance + transactions.filter { it.date < midnightMillis }.sumOf { it.amount }
+            points.add(ChartPoint(0f, saldoIniziale.toFloat()))
+            var balance = saldoIniziale.toFloat()
+            val txByHour = transactions.filter { it.date.toLocalDate() == today }
+                .groupBy { it.date.toLocalDateTime().hour }
+            for (hour in 0..23) {
+                val sum = txByHour[hour]?.sumOf { it.amount } ?: 0.0
+                balance += sum.toFloat()
+                points.add(ChartPoint((hour + 1).toFloat(), balance))
+            }
         }
         return points
     }
@@ -119,19 +135,16 @@ class GraphsViewModel(
     private fun computeMonthlyPoints(transactions: List<Transaction>, account: Account): List<ChartPoint> {
         val now = LocalDate.now()
         val monthStart = now.withDayOfMonth(1)
-        val monthStartMillis = monthStart.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
-        val initialBalance = getStartingBalanceForPeriod(account, transactions, monthStartMillis)
-
         val daysInMonth = now.lengthOfMonth()
         val days = (0 until daysInMonth).map { monthStart.plusDays(it.toLong()) }
         val txByDay = transactions.groupBy { it.date.toLocalDate() }
-
+        val accountCreationDate = account.createdAt.toLocalDate()
         val points = mutableListOf<ChartPoint>()
-        var balance = initialBalance.toFloat()
+        var balance = 0f
         points.add(ChartPoint(0f, balance))
         days.forEachIndexed { idx, day ->
-            if (day.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() == account.createdAt.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()) {
-                balance += account.balance.toFloat()
+            if (day == accountCreationDate) {
+                balance = account.balance.toFloat()
             }
             val dailySum = txByDay[day]?.sumOf { it.amount } ?: 0.0
             balance += dailySum.toFloat()
@@ -139,21 +152,8 @@ class GraphsViewModel(
         }
         return points
     }
-
-    private fun getStartingBalanceForPeriod(
-        account: Account,
-        transactions: List<Transaction>,
-        periodStartMillis: Long
-    ): Double {
-        //Se il conto è stato creato DOPO l’inizio del periodo, saldo iniziale = 0
-        if (account.createdAt > periodStartMillis) return 0.0
-        //Se il conto esiste già all'inizio del periodo, calcola saldo iniziale come prima
-        val txsBefore = transactions.filter { it.date < periodStartMillis }
-        return account.balance + txsBefore.sumOf { it.amount }
-    }
 }
 
-//Ha senso modificare i date nel db in un altro formato???
 fun Long.toLocalDate(): LocalDate =
     Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDate()
 

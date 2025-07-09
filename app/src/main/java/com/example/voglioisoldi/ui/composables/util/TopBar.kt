@@ -10,6 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -19,6 +23,8 @@ fun TopBar(
     showBackButton: Boolean = false,
     onBackClick: (() -> Unit)? = null
 ) {
+    var backEnabled by remember { mutableStateOf(true) }
+
     CenterAlignedTopAppBar(
         title = {
             Text(
@@ -29,7 +35,15 @@ fun TopBar(
         },
         navigationIcon = {
             if (showBackButton && onBackClick != null) {
-                IconButton(onClick = onBackClick) {
+                IconButton(
+                    onClick = {
+                        if (backEnabled) {
+                            backEnabled = false
+                            onBackClick()
+                        }
+                    },
+                    enabled = backEnabled
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Torna indietro"

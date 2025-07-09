@@ -30,17 +30,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.voglioisoldi.data.models.ThemeMode
+import com.example.voglioisoldi.data.repositories.SettingsRepository
 import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.composables.account.AccountInfoCard
-import com.example.voglioisoldi.ui.composables.transaction.BalanceSummary
-import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.chart.LineChartComposable
+import com.example.voglioisoldi.ui.composables.transaction.BalanceSummary
 import com.example.voglioisoldi.ui.composables.transaction.RecentTransactionsList
+import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.ChartPeriod
 import com.example.voglioisoldi.ui.viewmodel.GraphsViewModel
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
 
 
 @Composable
@@ -54,6 +57,13 @@ fun HomeScreen(
 
     val accountsWithBalance = uiState.accountsWithBalance
 
+    val settingsRepository: SettingsRepository = getKoin().get()
+    val themeMode by settingsRepository.getThemeMode().collectAsState(initial = ThemeMode.SYSTEM)
+    val isDark = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> androidx.compose.foundation.isSystemInDarkTheme()
+    }
     LaunchedEffect(Unit) {
         viewModel2.setPeriod(ChartPeriod.DAILY)
     }
@@ -87,7 +97,7 @@ fun HomeScreen(
             when {
                 uiState2.isLoading -> CircularProgressIndicator()
                 uiState2.points.isEmpty() -> Text("Nessun dato per il periodo selezionato.")
-                else -> LineChartComposable(uiState2.points)
+                else -> LineChartComposable(uiState2.points, isDark)
             }
             Spacer(Modifier.height(24.dp))
             if (accountsWithBalance.isNotEmpty()) {

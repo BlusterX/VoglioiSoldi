@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.data.database.entities.Account
 import com.example.voglioisoldi.ui.SoldiRoute
+import com.example.voglioisoldi.ui.composables.transaction.TransactionCard
 import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.util.TopBar
-import com.example.voglioisoldi.ui.composables.transaction.TransactionCard
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -54,7 +54,7 @@ fun TransactionsScreen(
         topBar = {
             TopBar(
                 showBackButton = true,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.navigate(SoldiRoute.Home) }
             )
         },
         bottomBar = {
@@ -133,7 +133,6 @@ fun AccountFilterBar(
                 Text(account.type)
             }
         }
-        // Optional: extra space at end
         item { Spacer(modifier = Modifier.width(4.dp)) }
     }
 }

@@ -23,8 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.data.models.ThemeMode
-import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.composables.settings.GeneralSettingsCard
+import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.util.ThemeSelectionDialog
 import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.GeneralSettingsViewModel
@@ -57,7 +58,7 @@ fun GeneralSettingsScreen(
         topBar = {
             TopBar(
                 showBackButton = true,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.navigate(SoldiRoute.Home) }
             )
         },
         bottomBar = {

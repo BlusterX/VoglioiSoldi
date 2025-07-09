@@ -64,7 +64,7 @@ fun AccountManagementScreen(
         topBar = {
             TopBar(
                 showBackButton = true,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.navigate(SoldiRoute.Home) }
             )
         },
         bottomBar = {

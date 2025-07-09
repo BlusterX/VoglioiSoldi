@@ -14,7 +14,8 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 
 @Composable
-fun LineChartComposable(points: List<ChartPoint>) {
+fun LineChartComposable(points: List<ChartPoint>, isDark: Boolean) {
+    val axisTextColor = if (isDark) android.graphics.Color.WHITE else android.graphics.Color.BLACK
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,10 +40,12 @@ fun LineChartComposable(points: List<ChartPoint>) {
             dataSet.setDrawFilled(true)
             dataSet.color = android.graphics.Color.rgb(33, 150, 243)
             dataSet.fillColor = android.graphics.Color.rgb(197, 225, 250)
-            dataSet.valueTextColor = android.graphics.Color.BLACK
-
+            dataSet.valueTextColor = axisTextColor
             chart.data = LineData(dataSet)
             chart.invalidate()
+            chart.xAxis.textColor = axisTextColor
+            chart.axisLeft.textColor = axisTextColor
+            chart.axisRight.textColor = axisTextColor
         }
     )
 }

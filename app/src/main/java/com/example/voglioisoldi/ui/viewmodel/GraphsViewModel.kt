@@ -37,7 +37,7 @@ class GraphsViewModel(
     private val sessionManager: SessionManager,
     private val userRepository: UserRepository,
     private val transactionRepository: TransactionRepository,
-    private val accountRepository: AccountRepository,
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ChartsUiState())

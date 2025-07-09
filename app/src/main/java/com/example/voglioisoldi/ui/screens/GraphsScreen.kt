@@ -16,12 +16,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.data.models.ThemeMode
+import com.example.voglioisoldi.data.repositories.SettingsRepository
+import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.composables.chart.LineChartComposable
 import com.example.voglioisoldi.ui.composables.chart.PeriodSelector
+import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.GraphsViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
 
 
 @Composable
@@ -31,11 +35,18 @@ fun GraphsScreen(
     val viewModel: GraphsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
+    val settingsRepository: SettingsRepository = getKoin().get()
+    val themeMode by settingsRepository.getThemeMode().collectAsState(initial = ThemeMode.SYSTEM)
+    val isDark = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> androidx.compose.foundation.isSystemInDarkTheme()
+    }
     Scaffold(
         topBar = {
             TopBar(
                 showBackButton = true,
-                onBackClick = { navController.popBackStack() })
+                onBackClick = { navController.navigate(SoldiRoute.Home) })
                  },
         bottomBar = {
             BottomBar(navController)
@@ -59,7 +70,7 @@ fun GraphsScreen(
             when {
                 uiState.isLoading -> CircularProgressIndicator()
                 uiState.points.isEmpty() -> Text("Nessun dato per il periodo selezionato.")
-                else -> LineChartComposable(uiState.points)
+                else -> LineChartComposable(uiState.points, isDark = isDark)
             }
         }
     }

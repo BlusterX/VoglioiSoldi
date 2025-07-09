@@ -65,7 +65,7 @@ fun AddAccountScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Crea il tuo account",
+                    "Crea un conto",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -91,7 +91,7 @@ fun AddAccountScreen(
                     enabled = !uiState.isLoading && userId != null,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Crea Account")
+                    Text("Crea conto!")
                 }
                 if (uiState.error != null) {
                     Spacer(Modifier.height(12.dp))

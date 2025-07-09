@@ -1,6 +1,5 @@
 package com.example.voglioisoldi.ui
 
-import AddTransactionScreen
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -8,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.voglioisoldi.ui.screens.AccountManagementScreen
 import com.example.voglioisoldi.ui.screens.AddAccountScreen
+import com.example.voglioisoldi.ui.screens.AddTransactionScreen
 import com.example.voglioisoldi.ui.screens.AppInfoScreen
 import com.example.voglioisoldi.ui.screens.ChangeEmailScreen
 import com.example.voglioisoldi.ui.screens.ChangePasswordScreen
@@ -16,6 +16,7 @@ import com.example.voglioisoldi.ui.screens.GeneralSettingsScreen
 import com.example.voglioisoldi.ui.screens.GraphsScreen
 import com.example.voglioisoldi.ui.screens.HomeScreen
 import com.example.voglioisoldi.ui.screens.LoginScreen
+import com.example.voglioisoldi.ui.screens.NotificationScreen
 import com.example.voglioisoldi.ui.screens.ProfileScreen
 import com.example.voglioisoldi.ui.screens.RegistrationScreen
 import com.example.voglioisoldi.ui.screens.SettingsScreen
@@ -33,6 +34,7 @@ sealed interface SoldiRoute {
     @Serializable data object Settings : SoldiRoute
     @Serializable data object GeneralSettings : SoldiRoute
     @Serializable data object AccountManagement : SoldiRoute
+    @Serializable data object Notifications : SoldiRoute
     @Serializable data object AppInfo : SoldiRoute
     @Serializable data object Transactions : SoldiRoute
     @Serializable data object Graphs : SoldiRoute
@@ -95,6 +97,11 @@ fun Navigation(navController: NavHostController, startDestination: SoldiRoute) {
         }
         composable<SoldiRoute.AccountManagement> {
             AccountManagementScreen(
+                navController = navController
+            )
+        }
+        composable<SoldiRoute.Notifications> {
+            NotificationScreen(
                 navController = navController
             )
         }

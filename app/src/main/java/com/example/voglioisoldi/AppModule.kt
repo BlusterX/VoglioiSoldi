@@ -1,12 +1,15 @@
 package com.example.voglioisoldi
 
+import android.content.Context
 import androidx.room.Room
 import com.example.voglioisoldi.data.database.AppDatabase
 import com.example.voglioisoldi.data.repositories.AccountRepository
 import com.example.voglioisoldi.data.repositories.NotificationRepository
+import com.example.voglioisoldi.data.repositories.SettingsRepository
 import com.example.voglioisoldi.data.repositories.TransactionRepository
 import com.example.voglioisoldi.data.repositories.UserRepository
 import com.example.voglioisoldi.data.session.SessionManager
+import com.example.voglioisoldi.data.session.dataStore
 import com.example.voglioisoldi.ui.viewmodel.AccountManagementViewModel
 import com.example.voglioisoldi.ui.viewmodel.AccountViewModel
 import com.example.voglioisoldi.ui.viewmodel.AddTransactionViewModel
@@ -25,6 +28,8 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
+    single { get<Context>().dataStore }
+
     single {
         Room.databaseBuilder(
             androidContext(),
@@ -39,6 +44,7 @@ val appModule = module {
     single { UserRepository(get()) }
     single { TransactionRepository(get()) }
     single { AccountRepository(get()) }
+    single { SettingsRepository(get()) }
     single { NotificationRepository(get()) }
 
     single { SessionManager(androidContext()) }

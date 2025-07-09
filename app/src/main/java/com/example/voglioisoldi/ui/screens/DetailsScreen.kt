@@ -127,12 +127,6 @@ fun DetailsScreen(
                             InfoRow(label = "Categoria:", value = transaction!!.category)
                             InfoRow(label = "Descrizione:", value = transaction!!.description.orEmpty())
                             InfoRow(label = "Data:", value = formatTransactionDate(transaction!!.date))
-                            Text(
-                                text = "ID: ${transaction!!.id}",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = Color.Gray,
-                                modifier = Modifier.align(Alignment.End)
-                            )
                         }
                     }
                     Button(

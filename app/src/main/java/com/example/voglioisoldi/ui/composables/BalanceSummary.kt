@@ -20,17 +20,14 @@ import com.example.voglioisoldi.data.database.entities.Transaction
 
 @Composable
 fun BalanceSummary(transactions: List<Transaction>) {
-    // Calcolo il totale delle entrate e delle uscite
     val totIncome = transactions.filter { it.amount > 0 }.sumOf { it.amount }
     val totExpense = transactions.filter { it.amount < 0 }.sumOf { it.amount }
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        //Card per entrate
         Card(
             colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
             shape = RoundedCornerShape(16.dp),
@@ -45,7 +42,7 @@ fun BalanceSummary(transactions: List<Transaction>) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Entrate",
+                    "Entrate totali:",
                     style = MaterialTheme.typography.labelMedium,
                     color = Color(0xFF388E3C)
                 )
@@ -56,7 +53,6 @@ fun BalanceSummary(transactions: List<Transaction>) {
                 )
             }
         }
-        //Card per uscite
         Card(
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFEBEE)),
             shape = RoundedCornerShape(16.dp),
@@ -71,7 +67,7 @@ fun BalanceSummary(transactions: List<Transaction>) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    "Uscite",
+                    "Uscite totali:",
                     style = MaterialTheme.typography.labelMedium,
                     color = Color(0xFFD32F2F)
                 )

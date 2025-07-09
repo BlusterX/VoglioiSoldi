@@ -49,7 +49,6 @@ fun AccountManagementScreen(
     val userId = rememberCurrentUserId()
 
     LaunchedEffect(userId) {
-        // Se userId non è null, carica i conti dell'utente
         userId?.let { actions.loadAccounts(it) }
     }
 

@@ -28,10 +28,8 @@ fun RecentTransactionsList(transactions: List<Transaction>, navController: NavCo
         if (transactions.isEmpty()) {
             Text("Nessuna transazione trovata.", color = Color.Gray)
         } else {
-            //Fa  vedere le ultime 5 transazioni, DA CAMBIARE???
-            transactions.take(5).forEach { transaction ->
+            transactions.take(3).forEach { transaction ->
                 TransactionCard(transaction){
-                    //Una volta cliccata la transazione apre il dettaglio di essa
                     navController.navigate(SoldiRoute.Details(transaction.id))
                 }
                 Spacer(modifier = Modifier.height(10.dp))

@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.material3.v121)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.mpandroidchart.v310)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)

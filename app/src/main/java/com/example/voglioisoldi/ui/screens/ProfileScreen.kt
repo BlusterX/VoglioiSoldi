@@ -20,11 +20,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.PersonalInfoCard
-import com.example.voglioisoldi.ui.composables.ProfileHeader
-import com.example.voglioisoldi.ui.composables.TopBar
-import com.example.voglioisoldi.ui.composables.UserActionsCard
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.user.PersonalInfoCard
+import com.example.voglioisoldi.ui.composables.user.ProfileHeader
+import com.example.voglioisoldi.ui.composables.util.TopBar
+import com.example.voglioisoldi.ui.composables.user.UserActionsCard
 import com.example.voglioisoldi.ui.util.rememberCurrentUserId
 import com.example.voglioisoldi.ui.viewmodel.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel

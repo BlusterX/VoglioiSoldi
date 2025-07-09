@@ -27,9 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.data.database.entities.Account
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.TopBar
-import com.example.voglioisoldi.ui.composables.TransactionCard
+import com.example.voglioisoldi.ui.SoldiRoute
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.util.TopBar
+import com.example.voglioisoldi.ui.composables.transaction.TransactionCard
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -88,7 +89,7 @@ fun TransactionsScreen(
                     items(filteredTransactions) { transaction ->
                         TransactionCard(transaction) {
                             navController.navigate(
-                                com.example.voglioisoldi.ui.SoldiRoute.Details(transaction.id)
+                                SoldiRoute.Details(transaction.id)
                             )
                         }
                     }

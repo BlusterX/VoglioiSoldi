@@ -16,10 +16,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.LineChartComposable
-import com.example.voglioisoldi.ui.composables.PeriodSelector
-import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.chart.LineChartComposable
+import com.example.voglioisoldi.ui.composables.chart.PeriodSelector
+import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.GraphsViewModel
 import org.koin.androidx.compose.koinViewModel
 

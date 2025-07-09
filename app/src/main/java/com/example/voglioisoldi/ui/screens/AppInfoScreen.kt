@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.composables.util.TopBar
 
 @Composable
 fun AppInfoScreen(

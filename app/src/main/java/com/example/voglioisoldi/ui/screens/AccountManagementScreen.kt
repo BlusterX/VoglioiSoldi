@@ -31,9 +31,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
-import com.example.voglioisoldi.ui.composables.AccountItem
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.composables.account.AccountItem
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.util.rememberCurrentUserId
 import com.example.voglioisoldi.ui.viewmodel.AccountManagementViewModel
 import org.koin.androidx.compose.koinViewModel

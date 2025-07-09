@@ -39,7 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.voglioisoldi.ui.composables.formatTransactionDate
+import com.example.voglioisoldi.ui.composables.transaction.formatTransactionDate
 import com.example.voglioisoldi.ui.viewmodel.DetailsViewModel
 import org.koin.androidx.compose.koinViewModel
 

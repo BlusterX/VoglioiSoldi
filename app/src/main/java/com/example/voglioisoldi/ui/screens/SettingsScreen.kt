@@ -35,8 +35,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 

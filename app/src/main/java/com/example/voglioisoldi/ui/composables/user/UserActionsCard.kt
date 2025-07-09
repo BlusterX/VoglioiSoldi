@@ -1,4 +1,4 @@
-package com.example.voglioisoldi.ui.composables
+package com.example.voglioisoldi.ui.composables.user
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

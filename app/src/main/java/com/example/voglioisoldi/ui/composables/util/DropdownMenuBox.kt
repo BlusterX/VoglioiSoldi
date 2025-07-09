@@ -1,4 +1,4 @@
-package com.example.voglioisoldi.ui.composables
+package com.example.voglioisoldi.ui.composables.util
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.DropdownMenuItem

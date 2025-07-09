@@ -16,7 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.voglioisoldi.data.database.entities.Account
-import com.example.voglioisoldi.ui.composables.DropdownMenuBox
+import com.example.voglioisoldi.ui.composables.util.DropdownMenuBox
 import com.example.voglioisoldi.ui.composables.account.AccountDropdown
 import com.example.voglioisoldi.ui.viewmodel.AddTransactionActions
 import com.example.voglioisoldi.ui.viewmodel.AddTransactionState

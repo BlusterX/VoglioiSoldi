@@ -1,4 +1,4 @@
-package com.example.voglioisoldi.ui.composables
+package com.example.voglioisoldi.ui.composables.chart
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

@@ -1,3 +1,4 @@
+package com.example.voglioisoldi.ui.screens
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -5,8 +6,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.composables.transaction.AddTransactionContent
 import com.example.voglioisoldi.ui.composables.transaction.TransactionConfirmDialog
 import com.example.voglioisoldi.ui.composables.transaction.TransactionErrorDialog

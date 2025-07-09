@@ -1,4 +1,4 @@
-package com.example.voglioisoldi.ui.composables
+package com.example.voglioisoldi.ui.composables.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

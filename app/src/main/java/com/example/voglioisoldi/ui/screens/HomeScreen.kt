@@ -31,12 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
-import com.example.voglioisoldi.ui.composables.AccountInfoCard
-import com.example.voglioisoldi.ui.composables.BalanceSummary
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.LineChartComposable
-import com.example.voglioisoldi.ui.composables.RecentTransactionsList
-import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.composables.account.AccountInfoCard
+import com.example.voglioisoldi.ui.composables.transaction.BalanceSummary
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.chart.LineChartComposable
+import com.example.voglioisoldi.ui.composables.transaction.RecentTransactionsList
+import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.ChartPeriod
 import com.example.voglioisoldi.ui.viewmodel.GraphsViewModel
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
@@ -91,7 +91,6 @@ fun HomeScreen(
             }
             Spacer(Modifier.height(24.dp))
             if (accountsWithBalance.isNotEmpty()) {
-                println("accountsWithBalance: $accountsWithBalance")
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)

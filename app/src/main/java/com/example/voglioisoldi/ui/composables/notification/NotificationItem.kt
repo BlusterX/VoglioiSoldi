@@ -1,4 +1,4 @@
-package com.example.voglioisoldi.ui.composables
+package com.example.voglioisoldi.ui.composables.notification
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

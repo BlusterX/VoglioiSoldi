@@ -23,10 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.data.models.ThemeMode
-import com.example.voglioisoldi.ui.composables.BottomBar
-import com.example.voglioisoldi.ui.composables.GeneralSettingsCard
-import com.example.voglioisoldi.ui.composables.ThemeSelectionDialog
-import com.example.voglioisoldi.ui.composables.TopBar
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.settings.GeneralSettingsCard
+import com.example.voglioisoldi.ui.composables.util.ThemeSelectionDialog
+import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.GeneralSettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 

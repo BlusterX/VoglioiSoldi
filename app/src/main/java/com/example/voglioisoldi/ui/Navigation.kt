@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.voglioisoldi.ui.screens.AccountManagementScreen
 import com.example.voglioisoldi.ui.screens.AddAccountScreen
 import com.example.voglioisoldi.ui.screens.AppInfoScreen
 import com.example.voglioisoldi.ui.screens.ChangeEmailScreen
@@ -29,6 +30,7 @@ sealed interface SoldiRoute {
     @Serializable data object ChangeEmail : SoldiRoute
     @Serializable data object ChangePassword : SoldiRoute
     @Serializable data object Settings : SoldiRoute
+    @Serializable data object AccountManagement : SoldiRoute
     @Serializable data object AppInfo : SoldiRoute
     @Serializable data object Transactions : SoldiRoute
     @Serializable data object Graphs : SoldiRoute
@@ -81,6 +83,11 @@ fun Navigation(navController: NavHostController, startDestination: SoldiRoute) {
         }
         composable<SoldiRoute.Settings> {
             SettingsScreen(
+                navController = navController
+            )
+        }
+        composable<SoldiRoute.AccountManagement> {
+            AccountManagementScreen(
                 navController = navController
             )
         }

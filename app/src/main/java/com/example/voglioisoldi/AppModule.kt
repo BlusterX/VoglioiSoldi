@@ -51,7 +51,7 @@ val appModule = module {
 
     viewModel { AuthViewModel(get(), get()) }
     viewModel { AddTransactionViewModel(get()) }
-    viewModel { HomeViewModel(get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
     viewModel { GeneralSettingsViewModel(get()) }
     viewModel { AccountManagementViewModel(get()) }

@@ -15,6 +15,7 @@ data class AddTransactionState(
     val description: String = "",
     val type: TransactionType = TransactionType.USCITA,
     val selectedCategory: String = "Spesa",
+    val accountId: Int? = null,
     val showConfirmDialog: Boolean = false,
     val showErrorDialog: Boolean = false,
     val errorMessage: String = ""
@@ -34,13 +35,16 @@ data class AddTransactionState(
             }
         }
 
-    fun toTransaction(userId: Int) = Transaction(
+    fun toTransaction(userId: Int) = accountId?.let {
+        Transaction(
         amount = finalAmount,
         category = selectedCategory,
         description = description,
         date = System.currentTimeMillis(),
-        userId = userId
+        userId = userId,
+        accountId = it
     )
+    }
 }
 
 enum class TransactionType {
@@ -57,6 +61,7 @@ interface AddTransactionActions {
     fun showErrorDialog(message: String)
     fun hideErrorDialog()
     fun saveTransaction(userId: Int)
+    fun setAccountId(accountId: Int)
 }
 
 class AddTransactionViewModel(
@@ -90,6 +95,10 @@ class AddTransactionViewModel(
 
         override fun setCategory(category: String) {
             _state.update { it.copy(selectedCategory = category) }
+        }
+
+        override fun setAccountId(accountId: Int) {
+            _state.update { it.copy(accountId = accountId) }
         }
 
         override fun showConfirmDialog() {
@@ -130,9 +139,19 @@ class AddTransactionViewModel(
 
         override fun saveTransaction(userId: Int) {
             viewModelScope.launch {
+                val currentState = _state.value
+                val transaction = currentState.toTransaction(userId)
+                if (transaction == null) {
+                    _state.update {
+                        it.copy(
+                            showConfirmDialog = false,
+                            showErrorDialog = true,
+                            errorMessage = "Seleziona un account."
+                        )
+                    }
+                    return@launch
+                }
                 try {
-                    val currentState = _state.value
-                    val transaction = currentState.toTransaction(userId)
                     transactionRepository.insertTransaction(transaction)
                     _state.update { it.copy(showConfirmDialog = false) }
                 } catch (e: Exception) {
@@ -140,11 +159,12 @@ class AddTransactionViewModel(
                         it.copy(
                             showConfirmDialog = false,
                             showErrorDialog = true,
-                            errorMessage = "Errore durante il salvataggio della transazione: ${e.message ?: "Errore sconosciuto"}"
+                            errorMessage = "Errore nel salvataggio: ${e.message ?: "Unknown error"}"
                         )
                     }
                 }
             }
         }
+
     }
 }

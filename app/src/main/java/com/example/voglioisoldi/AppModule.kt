@@ -7,6 +7,7 @@ import com.example.voglioisoldi.data.repositories.NotificationRepository
 import com.example.voglioisoldi.data.repositories.TransactionRepository
 import com.example.voglioisoldi.data.repositories.UserRepository
 import com.example.voglioisoldi.data.session.SessionManager
+import com.example.voglioisoldi.ui.viewmodel.AccountManagementViewModel
 import com.example.voglioisoldi.ui.viewmodel.AccountViewModel
 import com.example.voglioisoldi.ui.viewmodel.AddTransactionViewModel
 import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
@@ -45,6 +46,7 @@ val appModule = module {
     viewModel { AddTransactionViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
+    viewModel { AccountManagementViewModel(get()) }
     viewModel { NotificationViewModel(get()) }
     viewModel { AccountViewModel(get()) }
     viewModel { DetailsViewModel(get()) }

@@ -1,11 +1,12 @@
 package com.example.voglioisoldi.ui.composables
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -13,10 +14,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.voglioisoldi.R
 import com.example.voglioisoldi.ui.SoldiRoute
 
 @Composable
@@ -39,9 +38,9 @@ fun BottomBar(navController: NavController) {
             onClick = { navController.navigate(SoldiRoute.Transactions) },
             modifier = Modifier.weight(1f)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_transaction_history),
-                    contentDescription = "Transazioni",
+            Icon(
+                Icons.AutoMirrored.Filled.ReceiptLong,
+                contentDescription = "Account",
                 modifier = Modifier.size(50.dp)
             )
         }
@@ -60,9 +59,9 @@ fun BottomBar(navController: NavController) {
             onClick = { navController.navigate(SoldiRoute.Graphs) },
             modifier = Modifier.weight(1f)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_graphs),
-                contentDescription = "Grafici",
+            Icon(
+                Icons.Default.BarChart,
+                contentDescription = "Account",
                 modifier = Modifier.size(50.dp)
             )
         }

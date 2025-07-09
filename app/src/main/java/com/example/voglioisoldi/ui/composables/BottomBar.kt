@@ -11,9 +11,9 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
@@ -21,8 +21,8 @@ import com.example.voglioisoldi.ui.SoldiRoute
 @Composable
 fun BottomBar(navController: NavController) {
     BottomAppBar(
-        containerColor = Color.White,
-        modifier = Modifier.height(120.dp)
+        modifier = Modifier.height(120.dp),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
     ) {
         IconButton(
             onClick = { navController.navigate(SoldiRoute.Profile) },

@@ -14,6 +14,7 @@ import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
 import com.example.voglioisoldi.ui.viewmodel.ChangeEmailViewModel
 import com.example.voglioisoldi.ui.viewmodel.ChangePasswordViewModel
 import com.example.voglioisoldi.ui.viewmodel.DetailsViewModel
+import com.example.voglioisoldi.ui.viewmodel.GeneralSettingsViewModel
 import com.example.voglioisoldi.ui.viewmodel.GraphsViewModel
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
 import com.example.voglioisoldi.ui.viewmodel.NotificationViewModel
@@ -46,6 +47,7 @@ val appModule = module {
     viewModel { AddTransactionViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
+    viewModel { GeneralSettingsViewModel(get()) }
     viewModel { AccountManagementViewModel(get()) }
     viewModel { NotificationViewModel(get()) }
     viewModel { AccountViewModel(get()) }

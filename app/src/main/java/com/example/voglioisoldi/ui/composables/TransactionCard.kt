@@ -32,9 +32,6 @@ fun TransactionCard(transaction: Transaction, onClick: () -> Unit) {
     Card(
         shape = RoundedCornerShape(18.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
         modifier = Modifier.fillMaxWidth().clickable { onClick() }
     ) {
         Row(

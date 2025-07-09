@@ -12,6 +12,7 @@ import com.example.voglioisoldi.ui.screens.AppInfoScreen
 import com.example.voglioisoldi.ui.screens.ChangeEmailScreen
 import com.example.voglioisoldi.ui.screens.ChangePasswordScreen
 import com.example.voglioisoldi.ui.screens.DetailsScreen
+import com.example.voglioisoldi.ui.screens.GeneralSettingsScreen
 import com.example.voglioisoldi.ui.screens.GraphsScreen
 import com.example.voglioisoldi.ui.screens.HomeScreen
 import com.example.voglioisoldi.ui.screens.LoginScreen
@@ -30,6 +31,7 @@ sealed interface SoldiRoute {
     @Serializable data object ChangeEmail : SoldiRoute
     @Serializable data object ChangePassword : SoldiRoute
     @Serializable data object Settings : SoldiRoute
+    @Serializable data object GeneralSettings : SoldiRoute
     @Serializable data object AccountManagement : SoldiRoute
     @Serializable data object AppInfo : SoldiRoute
     @Serializable data object Transactions : SoldiRoute
@@ -83,6 +85,11 @@ fun Navigation(navController: NavHostController, startDestination: SoldiRoute) {
         }
         composable<SoldiRoute.Settings> {
             SettingsScreen(
+                navController = navController
+            )
+        }
+        composable<SoldiRoute.GeneralSettings> {
+            GeneralSettingsScreen(
                 navController = navController
             )
         }

@@ -85,7 +85,9 @@ fun SettingsContent(
     snackbarHostState: SnackbarHostState
 ) {
     val settingsItems = listOf(
-        SettingItem(Icons.Default.Settings, "Modifiche generali", "Modifiche nel tuo account") {},
+        SettingItem(Icons.Default.Settings, "Modifiche generali", "Modifiche nel tuo account") {
+            navController.navigate(SoldiRoute.GeneralSettings)
+        },
         SettingItem(Icons.Default.AccountBox, "Account", "Aggiungi o modifica il tuo account") {
             navController.navigate(SoldiRoute.AccountManagement)
         },

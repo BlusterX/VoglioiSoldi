@@ -3,11 +3,13 @@ package com.example.voglioisoldi.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.voglioisoldi.data.database.entities.User
+import com.example.voglioisoldi.data.repositories.SettingsRepository
 import com.example.voglioisoldi.data.repositories.UserRepository
 import com.example.voglioisoldi.data.repositories.hashPassword
 import com.example.voglioisoldi.data.session.SessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class AuthUiState(
@@ -20,17 +22,34 @@ data class AuthUiState(
     val isLoading: Boolean = false,
     val loginSuccess: Boolean = false,
     val registeredUserId: Int? = null,
-    val registrationSuccess: Boolean = false
+    val registrationSuccess: Boolean = false,
+    val biometricAvailable: Boolean = false,
+    val biometricUsername: String? = null
 )
 
 class AuthViewModel(
     private val userRepository: UserRepository,
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val settingsRepository: SettingsRepository
 ): ViewModel() {
-
 
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState
+
+    init {
+        loadBiometricSettings()
+    }
+
+    private fun loadBiometricSettings() {
+        viewModelScope.launch {
+            val username = settingsRepository.getBiometricUsername().first()
+            _uiState.value = _uiState.value.copy(biometricUsername = username)
+        }
+    }
+
+    fun setBiometricAvailable(available: Boolean) {
+        _uiState.value = _uiState.value.copy(biometricAvailable = available)
+    }
 
     fun onUsernameChanged(newUsername: String) {
         _uiState.value = _uiState.value.copy(username = newUsername)
@@ -107,6 +126,54 @@ class AuthViewModel(
                 )
             }
         }
+    }
+
+    fun biometricLogin() {
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+
+            try {
+                val biometricUsername = settingsRepository.getBiometricUsername().first()
+                if (biometricUsername == null) {
+                    _uiState.value = _uiState.value.copy(
+                        errorMessage = "Nessun utente registrato per l'accesso biometrico",
+                        isLoading = false
+                    )
+                    return@launch
+                }
+
+                val user = userRepository.getUserByUsername(biometricUsername)
+                if (user == null) {
+                    _uiState.value = _uiState.value.copy(
+                        errorMessage = "Utente non trovato",
+                        isLoading = false
+                    )
+                    return@launch
+                }
+
+                sessionManager.saveLoggedInUser(biometricUsername)
+                _uiState.value = _uiState.value.copy(
+                    loginSuccess = true,
+                    errorMessage = null,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = "Errore di sistema, riprova",
+                    isLoading = false
+                )
+            }
+        }
+    }
+
+    fun onBiometricError(error: String) {
+        _uiState.value = _uiState.value.copy(
+            errorMessage = error,
+            isLoading = false
+        )
     }
 
     fun register() {

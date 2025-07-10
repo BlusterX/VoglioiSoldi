@@ -58,7 +58,7 @@ val appModule = module {
     viewModel { NotificationViewModel(get()) }
     viewModel { AccountViewModel(get()) }
     viewModel { DetailsViewModel(get()) }
-    viewModel { ProfileViewModel(get()) }
+    viewModel { ProfileViewModel(get(), get()) }
     viewModel { ChangeEmailViewModel(get()) }
     viewModel { ChangePasswordViewModel(get()) }
     viewModel { GraphsViewModel(get(), get(), get(), get()) }

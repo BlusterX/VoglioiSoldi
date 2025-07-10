@@ -1,11 +1,11 @@
 package com.example.voglioisoldi
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.rememberNavController
 import com.example.voglioisoldi.data.models.ThemeMode
 import com.example.voglioisoldi.data.repositories.SettingsRepository
@@ -17,7 +17,7 @@ import com.example.voglioisoldi.ui.theme.VoglioiSoldiTheme
 import org.koin.android.ext.android.get
 
 //Al posto di Text("Screen 2") -> Text(stringResource(R.string.screen2_name))
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -32,6 +32,7 @@ import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.util.ThemeSelectionDialog
 import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.util.BiometricAuthUtil
+import com.example.voglioisoldi.ui.util.BiometricStatus
 import com.example.voglioisoldi.ui.viewmodel.GeneralSettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,7 +52,7 @@ fun GeneralSettingsScreen(
     LaunchedEffect(Unit) {
         actions.loadSettings()
         // Ulteriore controllo per la disponibilità dell'autenticazione biometrica
-        actions.setBiometricAvailable(biometricManager.isBiometricAvailable())
+        actions.setBiometricStatus(biometricManager.getBiometricStatus())
     }
 
     LaunchedEffect(state.errorMessage) {
@@ -105,19 +106,26 @@ fun GeneralSettingsScreen(
             GeneralSettingsCard(
                 icon = Icons.Default.Fingerprint,
                 title = "Accesso con impronta digitale",
-                subtitle = if (state.biometricAvailable) {
-                    if (state.biometricEnabled) "Attivo" else "Non Attivo"
-                } else {
-                    "Non disponibile su questo dispositivo"
+                subtitle = when (state.biometricStatus) {
+                    BiometricStatus.AVAILABLE -> {
+                        if (state.biometricEnabled) "Attivo" else "Non Attivo"
+                    }
+                    BiometricStatus.NOT_ENROLLED -> "Configura impronta digitale"
+                    BiometricStatus.NOT_AVAILABLE -> "Non disponibile su questo dispositivo"
                 },
-                onClick = null,
+                onClick = when (state.biometricStatus) {
+                    BiometricStatus.NOT_ENROLLED -> {
+                        { biometricManager.openBiometricSettings() }
+                    }
+                    else -> null
+                },
                 trailingContent = {
                     Switch(
                         checked = state.biometricEnabled,
                         onCheckedChange = { enabled ->
                             actions.updateBiometricEnabled(enabled)
                         },
-                        enabled = state.biometricAvailable
+                        enabled = state.biometricStatus == BiometricStatus.AVAILABLE
                     )
                 }
             )

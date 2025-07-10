@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
 import com.example.voglioisoldi.ui.util.BiometricAuthUtil
+import com.example.voglioisoldi.ui.util.BiometricStatus
 import com.example.voglioisoldi.ui.viewmodel.AuthViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -48,7 +49,7 @@ fun LoginScreen(
     // Prima del caricamento della pagina di login, controlla subito
     // (e setta la variabile) se biometrics è disponibile nel dispositivo
     LaunchedEffect(Unit) {
-        viewModel.setBiometricAvailable(biometricManager.isBiometricAvailable())
+        viewModel.setBiometricAvailable(biometricManager.getBiometricStatus() == BiometricStatus.AVAILABLE)
     }
 
     if (uiState.loginSuccess) {

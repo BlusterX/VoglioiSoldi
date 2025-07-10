@@ -1,6 +1,9 @@
 package com.example.voglioisoldi.ui.util
 
 import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -15,7 +18,7 @@ enum class BiometricStatus {
 class BiometricAuthUtil(
     private val context: Context
 ) {
-    private fun getBiometricStatus(): BiometricStatus {
+    fun getBiometricStatus(): BiometricStatus {
         return when (BiometricManager.from(context).canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)) {
             BiometricManager.BIOMETRIC_SUCCESS -> BiometricStatus.AVAILABLE
             BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> BiometricStatus.NOT_ENROLLED
@@ -23,8 +26,23 @@ class BiometricAuthUtil(
         }
     }
 
-    fun isBiometricAvailable(): Boolean {
-        return getBiometricStatus() == BiometricStatus.AVAILABLE
+    fun openBiometricSettings() {
+        try {
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                Intent(Settings.ACTION_BIOMETRIC_ENROLL) // Disponibile solo per API 30+
+            else Intent(Settings.ACTION_SECURITY_SETTINGS)
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            try {
+                // Fallback alle impostazioni di sicurezza generali
+                val intent = Intent(Settings.ACTION_SECURITY_SETTINGS)
+                context.startActivity(intent)
+            } catch (e2: Exception) {
+                // Fallback alle impostazioni generali del dispositivo
+                val intent = Intent(Settings.ACTION_SETTINGS)
+                context.startActivity(intent)
+            }
+        }
     }
 
     fun authenticate(

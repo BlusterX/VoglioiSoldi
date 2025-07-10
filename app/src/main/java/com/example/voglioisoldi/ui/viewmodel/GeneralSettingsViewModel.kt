@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.voglioisoldi.data.models.ThemeMode
 import com.example.voglioisoldi.data.repositories.SettingsRepository
 import com.example.voglioisoldi.data.session.SessionManager
+import com.example.voglioisoldi.ui.util.BiometricStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,14 +16,14 @@ import kotlinx.coroutines.launch
 data class GeneralSettingsState(
     val themeMode: ThemeMode = ThemeMode.SYSTEM,
     val biometricEnabled: Boolean = false,
-    val biometricAvailable: Boolean = false,
+    val biometricStatus: BiometricStatus = BiometricStatus.NOT_AVAILABLE,
     val errorMessage: String = ""
 )
 
 interface GeneralSettingsActions {
     fun loadSettings()
     fun updateTheme(themeMode: ThemeMode)
-    fun setBiometricAvailable(available: Boolean)
+    fun setBiometricStatus(status: BiometricStatus)
     fun updateBiometricEnabled(enabled: Boolean)
     fun clearError()
 }
@@ -73,8 +74,8 @@ class GeneralSettingsViewModel(
             }
         }
 
-        override fun setBiometricAvailable(available: Boolean) {
-            _state.update { it.copy(biometricAvailable = available) }
+        override fun setBiometricStatus(status: BiometricStatus) {
+            _state.update { it.copy(biometricStatus = status) }
         }
 
         override fun updateBiometricEnabled(enabled: Boolean) {

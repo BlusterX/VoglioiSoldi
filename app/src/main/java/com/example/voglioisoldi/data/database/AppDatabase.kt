@@ -18,7 +18,7 @@ import com.example.voglioisoldi.data.database.entities.User
         Account::class,
         Notification::class
     ],
-    version = 4,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

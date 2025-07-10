@@ -1,8 +1,16 @@
 package com.example.voglioisoldi
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.voglioisoldi.workers.RecurringTransactionWorker
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import java.util.concurrent.TimeUnit
 
 class App : Application() {
     override fun onCreate() {
@@ -11,5 +19,24 @@ class App : Application() {
             androidContext(this@App)
             modules(appModule)
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "recurring_tx_channel",
+                "Transazioni Ricorrenti",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
+
+        val workRequest = PeriodicWorkRequestBuilder<RecurringTransactionWorker>(
+            15, TimeUnit.MINUTES
+        ).build()
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "RecurringTransactionWorker",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
     }
 }

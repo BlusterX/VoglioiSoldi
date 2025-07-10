@@ -49,11 +49,11 @@ val appModule = module {
 
     single { SessionManager(androidContext()) }
 
-    viewModel { AuthViewModel(get(), get()) }
+    viewModel { AuthViewModel(get(), get(), get()) }
     viewModel { AddTransactionViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
-    viewModel { GeneralSettingsViewModel(get()) }
+    viewModel { GeneralSettingsViewModel(get(), get()) }
     viewModel { AccountManagementViewModel(get()) }
     viewModel { NotificationViewModel(get()) }
     viewModel { AccountViewModel(get()) }

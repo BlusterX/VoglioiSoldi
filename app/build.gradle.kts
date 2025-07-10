@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.material3.v121)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.mpandroidchart.v310)
+    implementation(libs.androidx.biometric)
     annotationProcessor(libs.androidx.room.compiler)
     ksp(libs.androidx.room.compiler)
 

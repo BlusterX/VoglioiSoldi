@@ -27,4 +27,12 @@ class DetailsViewModel(
             onDeleted()
         }
     }
+
+    fun stopRecurring(transaction: Transaction, onComplete: () -> Unit) {
+        viewModelScope.launch {
+            val updated = transaction.copy(isRecurringActive = false)
+            transactionRepository.updateTransaction(updated)
+            onComplete()
+        }
+    }
 }

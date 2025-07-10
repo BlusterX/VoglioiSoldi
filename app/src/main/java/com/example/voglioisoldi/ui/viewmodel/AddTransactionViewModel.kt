@@ -16,6 +16,9 @@ data class AddTransactionState(
     val type: TransactionType = TransactionType.USCITA,
     val selectedCategory: String = "Spesa",
     val accountId: Int? = null,
+    val isRecurring: Boolean = false,
+    val recurringPeriodMinutes: String = "",
+    val isRecurringActive: Boolean = false,
     val showConfirmDialog: Boolean = false,
     val showErrorDialog: Boolean = false,
     val errorMessage: String = ""
@@ -42,8 +45,11 @@ data class AddTransactionState(
         description = description,
         date = System.currentTimeMillis(),
         userId = userId,
-        accountId = it
-    )
+        accountId = it,
+        isRecurring = isRecurring,
+        recurringPeriodMinutes = recurringPeriodMinutes.toIntOrNull(),
+        lastExecutionDate = null
+        )
     }
 }
 
@@ -62,6 +68,8 @@ interface AddTransactionActions {
     fun hideErrorDialog()
     fun saveTransaction(userId: Int)
     fun setAccountId(accountId: Int)
+    fun setRecurring(enabled: Boolean)
+    fun setRecurringPeriod(period: String)
 }
 
 class AddTransactionViewModel(
@@ -72,6 +80,14 @@ class AddTransactionViewModel(
     val state: StateFlow<AddTransactionState> = _state.asStateFlow()
 
     val actions = object : AddTransactionActions {
+
+        override fun setRecurring(enabled: Boolean) {
+            _state.update { it.copy(isRecurring = enabled) }
+        }
+        override fun setRecurringPeriod(period: String) {
+            _state.update { it.copy(recurringPeriodMinutes = period) }
+        }
+
         override fun setAmount(amount: String) {
             _state.update { it.copy(amount = amount) }
         }

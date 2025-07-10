@@ -34,6 +34,12 @@ import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.viewmodel.HomeViewModel
 import org.koin.androidx.compose.koinViewModel
 
+sealed class TransactionFilter {
+    data object All : TransactionFilter()
+    data class Account(val accountId: Int) : TransactionFilter()
+    data object Recurring : TransactionFilter()
+}
+
 @Composable
 fun TransactionsScreen(
     navController: NavController
@@ -43,11 +49,12 @@ fun TransactionsScreen(
     val transactions = uiState.transactions
     val accounts = uiState.accounts
 
-    var selectedAccountId by remember { mutableStateOf<Int?>(null) }
-    val filteredTransactions = if (selectedAccountId == null) {
-        transactions
-    } else {
-        transactions.filter { it.accountId == selectedAccountId }
+    var selectedFilter by remember { mutableStateOf<TransactionFilter>(TransactionFilter.All) }
+
+    val filteredTransactions = when (selectedFilter) {
+        TransactionFilter.All -> transactions
+        is TransactionFilter.Account -> transactions.filter { it.accountId == (selectedFilter as TransactionFilter.Account).accountId }
+        TransactionFilter.Recurring -> transactions.filter { it.isRecurring && it.isRecurringActive }
     }
 
     Scaffold(
@@ -69,8 +76,8 @@ fun TransactionsScreen(
             if (accounts.isNotEmpty()) {
                 AccountFilterBar(
                     accounts = accounts,
-                    selectedAccountId = selectedAccountId,
-                    onSelectAccount = { id -> selectedAccountId = id }
+                    selectedFilter = selectedFilter,
+                    onSelectFilter = { selectedFilter = it }
                 )
             }
             if (filteredTransactions.isEmpty()) {
@@ -98,12 +105,11 @@ fun TransactionsScreen(
         }
     }
 }
-
 @Composable
 fun AccountFilterBar(
     accounts: List<Account>,
-    selectedAccountId: Int?,
-    onSelectAccount: (Int?) -> Unit
+    selectedFilter: TransactionFilter,
+    onSelectFilter: (TransactionFilter) -> Unit
 ) {
     LazyRow(
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 12.dp),
@@ -111,22 +117,38 @@ fun AccountFilterBar(
     ) {
         item {
             OutlinedButton(
-                onClick = { onSelectAccount(null) },
+                onClick = { onSelectFilter(TransactionFilter.All) },
                 colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = if (selectedAccountId == null) Color(0xFF1565C0) else Color.Transparent,
-                    contentColor = if (selectedAccountId == null) Color.White else Color(0xFF1565C0)
+                    containerColor = if (selectedFilter is TransactionFilter.All) Color(0xFF1565C0) else Color.Transparent,
+                    contentColor = if (selectedFilter is TransactionFilter.All) Color.White else Color(0xFF1565C0)
                 ),
                 border = ButtonDefaults.outlinedButtonBorder
             ) {
                 Text("Tutti")
             }
         }
+        item {
+            OutlinedButton(
+                onClick = { onSelectFilter(TransactionFilter.Recurring) },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    containerColor = if (selectedFilter is TransactionFilter.Recurring) Color(0xFF1565C0) else Color.Transparent,
+                    contentColor = if (selectedFilter is TransactionFilter.Recurring) Color.White else Color(0xFF1565C0)
+                ),
+                border = ButtonDefaults.outlinedButtonBorder
+            ) {
+                Text("Ricorrenti")
+            }
+        }
         items(accounts) { account ->
             OutlinedButton(
-                onClick = { onSelectAccount(account.id) },
+                onClick = { onSelectFilter(TransactionFilter.Account(account.id)) },
                 colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = if (selectedAccountId == account.id) Color(0xFF1565C0) else Color.Transparent,
-                    contentColor = if (selectedAccountId == account.id) Color.White else Color(0xFF1565C0)
+                    containerColor = if (selectedFilter is TransactionFilter.Account && (selectedFilter as TransactionFilter.Account).accountId == account.id)
+                        Color(0xFF1565C0)
+                    else Color.Transparent,
+                    contentColor = if (selectedFilter is TransactionFilter.Account && (selectedFilter as TransactionFilter.Account).accountId == account.id)
+                        Color.White
+                    else Color(0xFF1565C0)
                 ),
                 border = ButtonDefaults.outlinedButtonBorder
             ) {

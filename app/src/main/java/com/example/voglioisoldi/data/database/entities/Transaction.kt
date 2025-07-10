@@ -24,5 +24,9 @@ data class Transaction(
     val description: String? = null,
     val date: Long = System.currentTimeMillis(),
     val userId: Int,
-    val accountId: Int
+    val accountId: Int,
+    val isRecurring: Boolean = false,
+    val recurringPeriodMinutes: Int? = null,
+    val isRecurringActive: Boolean = true,
+    val lastExecutionDate: Long? = null
 )

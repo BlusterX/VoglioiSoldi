@@ -20,4 +20,7 @@ class TransactionRepository(
     suspend fun getTransactionById(id: Int): Transaction? {
         return dao.getTransactionById(id)
     }
+
+    suspend fun getActiveRecurringTransactions(): List<Transaction> =
+        dao.getAllTransactions().filter { it.isRecurring && it.isRecurringActive }
 }

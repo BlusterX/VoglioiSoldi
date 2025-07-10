@@ -24,4 +24,7 @@ interface TransactionDao {
 
     @Query("SELECT * FROM `transaction` WHERE id = :id LIMIT 1")
     suspend fun getTransactionById(id: Int): Transaction?
+
+    @Query("SELECT * FROM `transaction`")
+    suspend fun getAllTransactions(): List<Transaction>
 }

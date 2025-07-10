@@ -53,6 +53,8 @@ fun DetailsScreen(
     val homeViewModel: HomeViewModel = koinViewModel()
     val accounts = homeViewModel.uiState.collectAsState().value.accounts
     val accountType = accounts.find { it.id == transaction?.accountId }?.type ?: "Account sconosciuto"
+
+    var showStopRecurringDialog by remember { mutableStateOf(false) }
     LaunchedEffect(soldiId) {
         viewModel.loadTransactionById(soldiId)
     }
@@ -109,6 +111,39 @@ fun DetailsScreen(
                             InfoRow(label = "Descrizione:", value = transaction!!.description.orEmpty())
                             InfoRow(label = "Data:", value = formatTransactionDate(transaction!!.date))
                             InfoRow(label = "Conto:", value = accountType)
+
+
+                            if (transaction!!.isRecurring && transaction!!.isRecurringActive) {
+                                Button(
+                                    onClick = { showStopRecurringDialog = true },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFB8C00)),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 4.dp)
+                                ) {
+                                    Text("Interrompi ricorrenza")
+                                }
+                            }
+
+                            if (showStopRecurringDialog) {
+                                AlertDialog(
+                                    onDismissRequest = { showStopRecurringDialog = false },
+                                    title = { Text("Interrompi ricorrenza") },
+                                    text = { Text("Vuoi davvero fermare la ripetizione automatica di questa transazione?") },
+                                    confirmButton = {
+                                        TextButton(onClick = {
+                                            transaction?.let {
+                                                viewModel.stopRecurring(it) {
+                                                    showStopRecurringDialog = false
+                                                }
+                                            }
+                                        }) { Text("Sì, interrompi") }
+                                    },
+                                    dismissButton = {
+                                        TextButton(onClick = { showStopRecurringDialog = false }) { Text("Annulla") }
+                                    }
+                                )
+                            }
                         }
                     }
                     Button(

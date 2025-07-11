@@ -133,6 +133,7 @@ fun DetailsScreen(
                                             transaction?.let {
                                                 viewModel.stopRecurring(it) {
                                                     showStopRecurringDialog = false
+                                                    navController.popBackStack()
                                                 }
                                             }
                                         }) { Text("Sì, interrompi") }

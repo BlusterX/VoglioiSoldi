@@ -111,7 +111,9 @@ fun SettingsContent(
         SettingItem(Icons.Default.AccountBox, "Account", "Aggiungi o modifica il tuo account") {
             navController.navigate(SoldiRoute.AccountManagement)
         },
-        SettingItem(Icons.Default.Notifications, "Notifiche", "Gestisci le tue notifiche") {},
+        SettingItem(Icons.Default.Notifications, "Notifiche", "Gestisci le tue notifiche") {
+            navController.navigate(SoldiRoute.Notifications)
+        },
         SettingItem(Icons.Default.Info, "App Info", "Visualizza le informazioni generali") {
             navController.navigate(SoldiRoute.AppInfo)
         },

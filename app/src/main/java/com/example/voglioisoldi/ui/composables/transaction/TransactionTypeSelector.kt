@@ -29,21 +29,39 @@ fun TransactionTypeSelector(
         Button(
             onClick = { onTypeSelected(TransactionType.ENTRATA) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedType == TransactionType.ENTRATA) Color(0xFF81C784) else MaterialTheme.colorScheme.surface
+                containerColor = if (selectedType == TransactionType.ENTRATA)
+                    Color(0xFF81C784)
+                else
+                    MaterialTheme.colorScheme.surface
             ),
             shape = MaterialTheme.shapes.small,
             modifier = Modifier.padding(end = 8.dp)
         ) {
-            Text("Entrata", color = if (selectedType == TransactionType.ENTRATA) Color.White else Color.Black)
+            Text(
+                "Entrata",
+                color = if (selectedType == TransactionType.ENTRATA)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onSurface
+            )
         }
         Button(
             onClick = { onTypeSelected(TransactionType.USCITA) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (selectedType == TransactionType.USCITA) Color(0xFFE57373) else MaterialTheme.colorScheme.surface
+                containerColor = if (selectedType == TransactionType.USCITA)
+                    Color(0xFFE57373)
+                else
+                    MaterialTheme.colorScheme.surface
             ),
             shape = MaterialTheme.shapes.small
         ) {
-            Text("Uscita", color = if (selectedType == TransactionType.USCITA) Color.White else Color.Black)
+            Text(
+                "Uscita",
+                color = if (selectedType == TransactionType.USCITA)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

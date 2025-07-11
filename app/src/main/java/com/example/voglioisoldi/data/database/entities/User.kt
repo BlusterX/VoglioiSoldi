@@ -11,5 +11,6 @@ data class User (
     val passwordHash: String,
     val name: String,
     val surname: String,
-    val email: String
+    val email: String,
+    val profilePictureUri: String? = null
 )

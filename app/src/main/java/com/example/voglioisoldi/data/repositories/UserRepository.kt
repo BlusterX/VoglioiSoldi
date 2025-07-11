@@ -61,6 +61,9 @@ class UserRepository(
         }
     }
 
+    suspend fun updateUserProfilePicture(userId: Int, imageUri: String?) =
+        dao.updateUserProfilePicture(userId, imageUri)
+
     suspend fun deleteUser(userId: Int): Result<Unit> {
         return try {
             dao.deleteUser(userId)

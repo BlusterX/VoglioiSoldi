@@ -10,7 +10,6 @@ interface UserDao {
     @Insert
     suspend fun insertUser(user: User)
 
-    //L'implementation di UserDao, da errore perchè non utilizziamo ancora tale funziona
     @Query("SELECT * FROM user")
     suspend fun getAllUsers(): List<User>
 
@@ -32,6 +31,9 @@ interface UserDao {
 
     @Query("UPDATE user SET passwordHash = :newPasswordHash WHERE id = :userId")
     suspend fun updateUserPassword(userId: Int, newPasswordHash: String)
+
+    @Query("UPDATE user SET profilePictureUri = :imageUri WHERE id = :userId")
+    suspend fun updateUserProfilePicture(userId: Int, imageUri: String?)
 
     @Query("DELETE FROM user WHERE id = :userId")
     suspend fun deleteUser(userId: Int)

@@ -1,15 +1,14 @@
 package com.example.voglioisoldi.workers
 
 import android.annotation.SuppressLint
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.voglioisoldi.R
+import com.example.voglioisoldi.data.database.entities.Notification
+import com.example.voglioisoldi.data.repositories.NotificationRepository
 import com.example.voglioisoldi.data.repositories.TransactionRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,6 +19,7 @@ class RecurringTransactionWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams), KoinComponent {
     private val transactionRepository: TransactionRepository by inject()
+    private val notificationRepository: NotificationRepository by inject()  // <-- aggiungi
 
     @SuppressLint("DefaultLocale")
     override suspend fun doWork(): Result {
@@ -40,24 +40,27 @@ class RecurringTransactionWorker(
                 transactionRepository.insertTransaction(newTx)
                 transactionRepository.updateTransaction(tx.copy(lastExecutionDate = now))
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val channel = NotificationChannel(
-                        "recurring_tx_channel",
-                        "Transazioni Ricorrenti",
-                        NotificationManager.IMPORTANCE_DEFAULT
-                    )
-                    val manager = applicationContext.getSystemService(NotificationManager::class.java)
-                    manager.createNotificationChannel(channel)
-                }
-                Log.d("WORKER", "Creo la notifica automatica di ${newTx.amount}")
+                val notifTitle = "Transazione automatica eseguita"
+                val notifMessage = "Transazione automatica di €${String.format("%.2f", newTx.amount)} eseguita."
                 val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 val notif = NotificationCompat.Builder(applicationContext, "recurring_tx_channel")
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setContentTitle("Transazione automatica eseguita")
-                    .setContentText("Transazione automatica di €${String.format("%.2f", newTx.amount)} eseguita.")
+                    .setContentTitle(notifTitle)
+                    .setContentText(notifMessage)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .build()
                 notificationManager.notify((now + Random.nextInt(1000)).toInt(), notif)
+
+                //Salva la notifica anche nel DB
+                notificationRepository.insertNotification(
+                    Notification(
+                        title = notifTitle,
+                        message = notifMessage,
+                        timestamp = now,
+                        userId = newTx.userId,  // attenzione a prendere il giusto userId!
+                        isRead = false
+                    )
+                )
             }
         }
         return Result.success()

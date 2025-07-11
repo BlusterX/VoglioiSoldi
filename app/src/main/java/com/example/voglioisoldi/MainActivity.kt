@@ -20,7 +20,6 @@ import com.example.voglioisoldi.ui.theme.VoglioiSoldiTheme
 import com.example.voglioisoldi.workers.RecurringTransactionWorker
 import org.koin.android.ext.android.get
 
-//Al posto di Text("Screen 2") -> Text(stringResource(R.string.screen2_name))
 class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +57,8 @@ class MainActivity : FragmentActivity() {
                 this,
                 "Senza permesso non riceverai notifiche automatiche.",
                 Toast.LENGTH_LONG
-            ).show()        }
+            ).show()
+        }
     }
 }
 

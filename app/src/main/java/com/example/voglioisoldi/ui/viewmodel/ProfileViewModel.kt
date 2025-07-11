@@ -20,6 +20,7 @@ data class ProfileState(
 
 interface ProfileActions {
     fun loadUser(userId: Int)
+    fun updateProfilePicture(userId: Int, imageUri: String?)
     fun showDeleteDialog()
     fun hideDeleteDialog()
     fun deleteAccount(userId: Int, onSuccess: () -> Unit)
@@ -47,6 +48,19 @@ class ProfileViewModel(
                             errorMessage = "Errore nel caricamento del profilo."
                         )
                     }
+                }
+            }
+        }
+
+        override fun updateProfilePicture(userId: Int, imageUri: String?) {
+            viewModelScope.launch {
+                try {
+                    userRepository.updateUserProfilePicture(userId, imageUri)
+                    loadUser(userId)
+                } catch (e: Exception) {
+                    _state.value = _state.value.copy(
+                        errorMessage = "Errore nell'aggiornamento dell'immagine del profilo: ${e.message}"
+                    )
                 }
             }
         }

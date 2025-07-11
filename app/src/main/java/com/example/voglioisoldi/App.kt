@@ -3,7 +3,6 @@ package com.example.voglioisoldi
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.os.Build
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -20,15 +19,21 @@ class App : Application() {
             modules(appModule)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "recurring_tx_channel",
-                "Transazioni Ricorrenti",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
-        }
+        val manager = getSystemService(NotificationManager::class.java)
+
+        val recurringTxChannel = NotificationChannel(
+            "recurring_tx_channel",
+            "Transazioni Ricorrenti",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        manager.createNotificationChannel(recurringTxChannel)
+
+        val registrationChannel = NotificationChannel(
+            "registration_channel",
+            "Notifica di Registrazione",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        manager.createNotificationChannel(registrationChannel)
 
         val workRequest = PeriodicWorkRequestBuilder<RecurringTransactionWorker>(
             15, TimeUnit.MINUTES

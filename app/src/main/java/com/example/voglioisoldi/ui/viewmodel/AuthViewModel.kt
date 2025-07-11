@@ -1,8 +1,14 @@
 package com.example.voglioisoldi.ui.viewmodel
 
+import android.app.NotificationManager
+import android.content.Context
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.voglioisoldi.R
+import com.example.voglioisoldi.data.database.entities.Notification
 import com.example.voglioisoldi.data.database.entities.User
+import com.example.voglioisoldi.data.repositories.NotificationRepository
 import com.example.voglioisoldi.data.repositories.SettingsRepository
 import com.example.voglioisoldi.data.repositories.UserRepository
 import com.example.voglioisoldi.data.repositories.hashPassword
@@ -12,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 data class AuthUiState(
     val username: String = "",
@@ -41,7 +48,8 @@ data class AuthUiState(
 class AuthViewModel(
     private val userRepository: UserRepository,
     private val sessionManager: SessionManager,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val notificationRepository: NotificationRepository
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -56,6 +64,33 @@ class AuthViewModel(
             val username = settingsRepository.getBiometricUsername().first()
             _uiState.value = _uiState.value.copy(biometricUsername = username)
         }
+    }
+
+    private suspend fun sendRegistrationNotification(user: User, context: Context) {
+        val notificationTitle = "Benvenuto in VoglioISoldi!"
+        val notificationMessage = "Ciao ${user.name}, la tua registrazione è stata completata con successo!"
+        val timestamp = System.currentTimeMillis()
+
+        // Invia notifica sul dispositivo
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notification = NotificationCompat.Builder(context, "registration_channel")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(notificationTitle)
+            .setContentText(notificationMessage)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+
+        notificationManager.notify((timestamp + Random.nextInt(1000)).toInt(), notification)
+
+        // Salva notifica nel database
+        val dbNotification = Notification(
+            title = notificationTitle,
+            message = notificationMessage,
+            timestamp = timestamp,
+            userId = user.id,
+            isRead = false
+        )
+        notificationRepository.insertNotification(dbNotification)
     }
 
     fun setBiometricAvailable(available: Boolean) {
@@ -211,7 +246,7 @@ class AuthViewModel(
         )
     }
 
-    fun register() {
+    fun register(context: Context) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
@@ -249,12 +284,21 @@ class AuthViewModel(
                 sessionManager.saveLoggedInUser(state.username)
                 val registeredUser = userRepository.getUserByUsername(state.username)
 
-                _uiState.value = state.copy(
-                    registrationSuccess = true,
-                    errorMessage = null,
-                    isLoading = false,
-                    registeredUserId = registeredUser?.id
-                )
+                if (registeredUser != null) {
+                    sendRegistrationNotification(registeredUser, context)
+
+                    _uiState.value = state.copy(
+                        registrationSuccess = true,
+                        errorMessage = null,
+                        isLoading = false,
+                        registeredUserId = registeredUser.id
+                    )
+                } else {
+                    _uiState.value = state.copy(
+                        errorMessage = "Errore durante il recupero dell'utente registrato",
+                        isLoading = false
+                    )
+                }
             } catch (e: Exception) {
                 _uiState.value = state.copy(
                     errorMessage = "Errore durante la registrazione dell'utente",

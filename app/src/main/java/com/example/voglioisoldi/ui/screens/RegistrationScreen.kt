@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,6 +40,7 @@ fun RegistrationScreen(
 ) {
     val viewModel: AuthViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(uiState.registrationSuccess) {
         if (uiState.registrationSuccess) {
@@ -176,7 +178,7 @@ fun RegistrationScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
-            onClick = { viewModel.register() },
+            onClick = { viewModel.register(context) },
             enabled = !uiState.isLoading && uiState.isNameValid && uiState.isSurnameValid &&
                     uiState.isUsernameValid && uiState.isEmailValid && uiState.isPasswordValid &&
                     uiState.name.isNotBlank() && uiState.surname.isNotBlank() &&

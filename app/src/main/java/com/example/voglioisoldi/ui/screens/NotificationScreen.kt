@@ -17,17 +17,20 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.notification.NotificationItem
+import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.util.rememberCurrentUserId
 import com.example.voglioisoldi.ui.viewmodel.NotificationViewModel
@@ -41,13 +44,15 @@ fun NotificationScreen(
     val state by viewModel.state.collectAsState()
     val actions = viewModel.actions
     val userId = rememberCurrentUserId()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(userId) {
         userId?.let { actions.loadNotifications(it) }
     }
 
     LaunchedEffect(state.errorMessage) {
-        state.errorMessage.let {
+        if (state.errorMessage.isNotEmpty()) {
+            snackbarHostState.showSnackbar(state.errorMessage)
             actions.clearError()
         }
     }
@@ -62,6 +67,7 @@ fun NotificationScreen(
         bottomBar = {
             BottomBar(navController)
         },
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             if (state.notifications.any { !it.isRead }) {
                 ExtendedFloatingActionButton(
@@ -107,7 +113,9 @@ fun NotificationScreen(
                 }
             } else {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(state.notifications) { notification ->

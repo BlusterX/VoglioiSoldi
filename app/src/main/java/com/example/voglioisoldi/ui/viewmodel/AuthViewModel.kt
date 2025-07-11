@@ -7,6 +7,7 @@ import com.example.voglioisoldi.data.repositories.SettingsRepository
 import com.example.voglioisoldi.data.repositories.UserRepository
 import com.example.voglioisoldi.data.repositories.hashPassword
 import com.example.voglioisoldi.data.session.SessionManager
+import com.example.voglioisoldi.ui.util.ValidationUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -18,6 +19,16 @@ data class AuthUiState(
     val name: String = "",
     val surname: String = "",
     val email: String = "",
+    val isNameValid: Boolean = true,
+    val isSurnameValid: Boolean = true,
+    val isUsernameValid: Boolean = true,
+    val isEmailValid: Boolean = true,
+    val isPasswordValid: Boolean = true,
+    val nameError: String? = null,
+    val surnameError: String? = null,
+    val usernameError: String? = null,
+    val emailError: String? = null,
+    val passwordError: String? = null,
     val errorMessage: String? = null,
     val isLoading: Boolean = false,
     val loginSuccess: Boolean = false,
@@ -52,23 +63,62 @@ class AuthViewModel(
     }
 
     fun onUsernameChanged(newUsername: String) {
-        _uiState.value = _uiState.value.copy(username = newUsername)
+        val input = newUsername.trim()
+        val (isValid, error) = ValidationUtils.validateUsername(input)
+        _uiState.value = _uiState.value.copy(
+            username = newUsername,
+            isUsernameValid = isValid,
+            usernameError = error
+        )
     }
 
     fun onPasswordChanged(newPassword: String) {
-        _uiState.value = _uiState.value.copy(password = newPassword)
+        val (isValid, error) = ValidationUtils.validatePassword(newPassword)
+        _uiState.value = _uiState.value.copy(
+            password = newPassword,
+            isPasswordValid = isValid,
+            passwordError = error
+        )
     }
 
     fun onNameChanged(newName: String) {
-        _uiState.value = _uiState.value.copy(name = newName)
+        val input = newName.trim()
+        val (isValid, error) = ValidationUtils.validateName(input)
+        _uiState.value = _uiState.value.copy(
+            name = newName,
+            isNameValid = isValid,
+            nameError = error
+        )
     }
 
     fun onSurnameChanged(newSurname: String) {
-        _uiState.value = _uiState.value.copy(surname = newSurname)
+        val input = newSurname.trim()
+        val (isValid, error) = ValidationUtils.validateSurname(input)
+        _uiState.value = _uiState.value.copy(
+            surname = newSurname,
+            isSurnameValid = isValid,
+            surnameError = error
+        )
     }
 
     fun onEmailChanged(newEmail: String) {
-        _uiState.value = _uiState.value.copy(email = newEmail)
+        val input = newEmail.trim()
+        val (isValid, error) = ValidationUtils.validateEmail(input)
+        _uiState.value = _uiState.value.copy(
+            email = newEmail,
+            isEmailValid = isValid,
+            emailError = error
+        )
+    }
+
+    private fun isFormValid(): Boolean {
+        val state = _uiState.value
+        return state.isNameValid && state.isSurnameValid &&
+                state.isUsernameValid && state.isEmailValid &&
+                state.isPasswordValid &&
+                state.name.isNotBlank() && state.surname.isNotBlank() &&
+                state.username.isNotBlank() && state.email.isNotBlank() &&
+                state.password.isNotBlank()
     }
 
     fun login() {
@@ -76,33 +126,18 @@ class AuthViewModel(
             val username = _uiState.value.username.trim()
             val password = _uiState.value.password
 
-            //Controlla che i campi non siano vuoti
             if (username.isEmpty() || password.isEmpty()) {
                 _uiState.value = _uiState.value.copy(
-                    errorMessage = "Inserisci sia username che password",
+                    errorMessage = "Inserisci le credenziali di accesso",
                     isLoading = false
                 )
                 return@launch
             }
 
-            //Controlla che i campi abbiano una lunghez minima
-            if (username.length < 3) {
-                _uiState.value = _uiState.value.copy(
-                    errorMessage = "Lo username deve avere almeno 3 caratteri",
-                    isLoading = false
-                )
-                return@launch
-            }
-            //Almeno 6 caratteri per le pass
-            if (password.length < 6) {
-                _uiState.value = _uiState.value.copy(
-                    errorMessage = "La password deve avere almeno 6 caratteri",
-                    isLoading = false
-                )
-                return@launch
-            }
-
-            _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)
+            _uiState.value = _uiState.value.copy(
+                isLoading = true,
+                errorMessage = null
+            )
 
             try {
                 val user = userRepository.getUser(username, password)
@@ -178,35 +213,54 @@ class AuthViewModel(
 
     fun register() {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(
+                isLoading = true,
+                errorMessage = null
+            )
+
             val state = _uiState.value
-            if (
-                state.name.isBlank() || state.surname.isBlank() ||
-                state.username.isBlank() || state.email.isBlank() || state.password.isBlank()
-            ) {
-                _uiState.value = state.copy(errorMessage = "Compila tutti i campi", isLoading = false)
+
+            if (!isFormValid()) {
+                _uiState.value = state.copy(
+                    errorMessage = "Campi non compilati correttamente",
+                    isLoading = false
+                )
                 return@launch
             }
-            if (userRepository.userExists(state.username, state.email)) {
-                _uiState.value = state.copy(errorMessage = "Username o email già in uso", isLoading = false)
-                return@launch
+
+            try {
+                if (userRepository.userExists(state.username, state.email)) {
+                    _uiState.value = state.copy(
+                        errorMessage = "Username o email già in uso",
+                        isLoading = false
+                    )
+                    return@launch
+                }
+
+                val user = User(
+                    username = state.username,
+                    passwordHash = hashPassword(state.password),
+                    name = state.name,
+                    surname = state.surname,
+                    email = state.email
+                )
+
+                userRepository.insertUser(user)
+                sessionManager.saveLoggedInUser(state.username)
+                val registeredUser = userRepository.getUserByUsername(state.username)
+
+                _uiState.value = state.copy(
+                    registrationSuccess = true,
+                    errorMessage = null,
+                    isLoading = false,
+                    registeredUserId = registeredUser?.id
+                )
+            } catch (e: Exception) {
+                _uiState.value = state.copy(
+                    errorMessage = "Errore durante la registrazione dell'utente",
+                    isLoading = false
+                )
             }
-            val user = User(
-                username = state.username,
-                passwordHash = hashPassword(state.password),
-                name = state.name,
-                surname = state.surname,
-                email = state.email
-            )
-            userRepository.insertUser(user)
-            sessionManager.saveLoggedInUser(state.username)
-            val registeredUser = userRepository.getUserByUsername(state.username)
-            _uiState.value = state.copy(
-                registrationSuccess = true,
-                errorMessage = null,
-                isLoading = false,
-                registeredUserId = registeredUser?.id
-            )
         }
     }
 

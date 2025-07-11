@@ -1,5 +1,6 @@
 package com.example.voglioisoldi.ui.screens
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,18 +15,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.voglioisoldi.ui.SoldiRoute
-import com.example.voglioisoldi.ui.composables.util.BottomBar
 import com.example.voglioisoldi.ui.composables.user.PersonalInfoCard
 import com.example.voglioisoldi.ui.composables.user.ProfileHeader
-import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.composables.user.UserActionsCard
+import com.example.voglioisoldi.ui.composables.util.BottomBar
+import com.example.voglioisoldi.ui.composables.util.TopBar
 import com.example.voglioisoldi.ui.util.rememberCurrentUserId
+import com.example.voglioisoldi.ui.util.saveProfilePictureToStorage
 import com.example.voglioisoldi.ui.viewmodel.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -37,6 +43,9 @@ fun ProfileScreen(
     val state by viewModel.state.collectAsState()
     val actions = viewModel.actions
     val userId = rememberCurrentUserId()
+    val context = LocalContext.current
+
+    var isProcessingImage by remember { mutableStateOf(false) }
 
     LaunchedEffect(userId) {
         if (userId != null) {
@@ -65,7 +74,30 @@ fun ProfileScreen(
         ) {
             ProfileHeader(
                 name = state.user?.name ?: "",
-                surname = state.user?.surname ?: ""
+                surname = state.user?.surname ?: "",
+                profilePictureUri = state.user?.profilePictureUri?.let { Uri.parse(it) },
+                onProfilePictureSelected = { uri ->
+                    if (uri == Uri.EMPTY) {
+                        // Remove profile image
+                        if (userId != null) {
+                            actions.updateProfilePicture(userId, null)
+                        }
+                    } else {
+                        // Save and update profile image
+                        isProcessingImage = true
+                        if (userId != null) {
+                            try {
+                                val savedUri = saveProfilePictureToStorage(uri, context.contentResolver, userId)
+                                actions.updateProfilePicture(userId, savedUri.toString())
+                            } catch (e: Exception) {
+                                // Handle error - could show a toast or error dialog
+                                e.printStackTrace()
+                            } finally {
+                                isProcessingImage = false
+                            }
+                        }
+                    }
+                }
             )
 
             PersonalInfoCard(state.user)

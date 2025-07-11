@@ -1,10 +1,13 @@
 package com.example.voglioisoldi.ui.viewmodel
 
+import android.content.ContentResolver
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.voglioisoldi.data.database.entities.User
 import com.example.voglioisoldi.data.repositories.SettingsRepository
 import com.example.voglioisoldi.data.repositories.UserRepository
+import com.example.voglioisoldi.ui.util.saveProfilePictureToStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +23,7 @@ data class ProfileState(
 
 interface ProfileActions {
     fun loadUser(userId: Int)
-    fun updateProfilePicture(userId: Int, imageUri: String?)
+    fun updateProfilePicture(userId: Int, imageUri: Uri?, contentResolver: ContentResolver)
     fun showDeleteDialog()
     fun hideDeleteDialog()
     fun deleteAccount(userId: Int, onSuccess: () -> Unit)
@@ -52,10 +55,15 @@ class ProfileViewModel(
             }
         }
 
-        override fun updateProfilePicture(userId: Int, imageUri: String?) {
+        override fun updateProfilePicture(userId: Int, imageUri: Uri?, contentResolver: ContentResolver) {
             viewModelScope.launch {
                 try {
-                    userRepository.updateUserProfilePicture(userId, imageUri)
+                    val uriString = if (imageUri == null || imageUri == Uri.EMPTY)
+                        null // Eliminazione foto profilo
+                    else
+                        saveProfilePictureToStorage(imageUri, contentResolver, userId).toString()
+
+                    userRepository.updateUserProfilePicture(userId, uriString)
                     loadUser(userId)
                 } catch (e: Exception) {
                     _state.value = _state.value.copy(

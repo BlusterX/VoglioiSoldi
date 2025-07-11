@@ -77,6 +77,7 @@ fun DetailsScreen(
                 Column(
                     Modifier
                         .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(horizontal = 24.dp),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -86,10 +87,7 @@ fun DetailsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 24.dp, bottom = 32.dp),
-                        elevation = CardDefaults.cardElevation(8.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        )
+                        elevation = CardDefaults.cardElevation(8.dp)
                     ) {
                         Column(
                             modifier = Modifier

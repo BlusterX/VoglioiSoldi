@@ -80,9 +80,9 @@ class ChangePasswordViewModel(
                 return
             }
 
-            if (currentState.newPassword.length < 6) {
+            if (currentState.newPassword.length < 8) {
                 _state.update { it.copy(
-                    errorMessage = "La nuova password deve essere lunga almeno 6 caratteri.",
+                    errorMessage = "La nuova password deve essere lunga almeno 8 caratteri.",
                     currentPasswordError = false,
                     newPasswordError = true,
                     confirmPasswordError = false

@@ -25,8 +25,8 @@ data class AddTransactionState(
 ) {
     val availableCategories: List<String>
         get() = when (type) {
-            TransactionType.ENTRATA -> listOf("Stipendio", "Bonus", "Vendita", "Altro")
-            TransactionType.USCITA -> listOf("Spesa", "Trasporti", "Bollette", "Svago", "Altro")
+            TransactionType.ENTRATA -> listOf("Stipendio", "Vendite", "Rimborso", "Regalo", "Bonus", "Altro")
+            TransactionType.USCITA -> listOf("Spesa", "Trasporti", "Bollette", "Salute", "Svago", "Donazione", "Altro")
         }
 
     private val finalAmount: Double

@@ -69,7 +69,7 @@ fun ProfileHeader(
             ) {
                 ProfilePicture(profilePictureUri, initials)
 
-                // Menu to select the profile picture
+                // Menu per selezionare l'immagine di profilo
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
@@ -140,7 +140,10 @@ fun ProfileHeader(
 }
 
 @Composable
-private fun ProfilePicture(uri: Uri?, initials: String) {
+private fun ProfilePicture(
+    uri: Uri?,
+    initials: String
+) {
     if (uri != null && uri != Uri.EMPTY) {
         AsyncImage(
             model = uri,

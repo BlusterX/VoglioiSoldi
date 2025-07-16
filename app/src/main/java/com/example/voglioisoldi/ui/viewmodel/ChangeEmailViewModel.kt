@@ -1,9 +1,9 @@
 package com.example.voglioisoldi.ui.viewmodel
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.voglioisoldi.data.repositories.UserRepository
+import com.example.voglioisoldi.ui.util.ValidationUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,6 +14,7 @@ data class ChangeEmailState(
     val currentEmail: String = "",
     val newEmail: String = "",
     val showSuccessDialog: Boolean = false,
+    val isEmailValid: Boolean = true,
     val errorMessage: String = ""
 )
 
@@ -51,13 +52,19 @@ class ChangeEmailViewModel(
         override fun updateEmail(userId: Int, onSuccess: () -> Unit) {
             val currentState = _state.value
 
-            if (!isValidEmail(currentState.newEmail)) {
-                _state.update { it.copy(errorMessage = "Formato email non valido.") }
+            val (isValid, validationError) = ValidationUtils.validateEmail(currentState.newEmail)
+            if (!isValid) {
+                _state.update {
+                    it.copy(
+                        isEmailValid = false,
+                        errorMessage = validationError ?: ""
+                    )
+                }
                 return
             }
 
             if (currentState.newEmail == currentState.currentEmail) {
-                _state.update { it.copy(errorMessage = "La nuova email inserita è uguale a quella attuale.") }
+                _state.update { it.copy(errorMessage = "La nuova email inserita è uguale a quella attuale") }
                 return
             }
 
@@ -92,11 +99,12 @@ class ChangeEmailViewModel(
         }
 
         override fun clearError() {
-            _state.update { it.copy(errorMessage = "") }
+            _state.update {
+                it.copy(
+                    isEmailValid = true,
+                    errorMessage = ""
+                )
+            }
         }
-    }
-
-    private fun isValidEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

@@ -81,4 +81,12 @@ object ValidationUtils {
             else -> true to null
         }
     }
+
+    fun validateConfirmPassword(confirmPassword: String, password: String): Pair<Boolean, String?> {
+        return when {
+            confirmPassword.isEmpty() -> false to "La conferma della password è obbligatoria"
+            confirmPassword != password -> false to "Le password non coincidono"
+            else -> true to null
+        }
+    }
 }

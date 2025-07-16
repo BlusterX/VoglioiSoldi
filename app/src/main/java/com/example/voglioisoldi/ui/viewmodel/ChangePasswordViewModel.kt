@@ -3,6 +3,7 @@ package com.example.voglioisoldi.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.voglioisoldi.data.repositories.UserRepository
+import com.example.voglioisoldi.ui.util.ValidationUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,9 +28,6 @@ interface ChangePasswordActions {
     fun setCurrentPassword(password: String)
     fun setNewPassword(password: String)
     fun setConfirmPassword(password: String)
-    fun toggleCurrentPasswordVisibility()
-    fun toggleNewPasswordVisibility()
-    fun toggleConfirmPasswordVisibility()
     fun updatePassword(userId: Int, onSuccess: () -> Unit)
     fun hideSuccessDialog()
     fun clearError()
@@ -55,18 +53,6 @@ class ChangePasswordViewModel(
             _state.update { it.copy(confirmPassword = password) }
         }
 
-        override fun toggleCurrentPasswordVisibility() {
-            _state.update { it.copy(showCurrentPassword = !it.showCurrentPassword) }
-        }
-
-        override fun toggleNewPasswordVisibility() {
-            _state.update { it.copy(showNewPassword = !it.showNewPassword) }
-        }
-
-        override fun toggleConfirmPasswordVisibility() {
-            _state.update { it.copy(showConfirmPassword = !it.showConfirmPassword) }
-        }
-
         override fun updatePassword(userId: Int, onSuccess: () -> Unit) {
             val currentState = _state.value
 
@@ -80,9 +66,10 @@ class ChangePasswordViewModel(
                 return
             }
 
-            if (currentState.newPassword.length < 8) {
+            val (isNewPasswordValid, newPasswordError) = ValidationUtils.validatePassword(currentState.newPassword)
+            if (!isNewPasswordValid) {
                 _state.update { it.copy(
-                    errorMessage = "La nuova password deve essere lunga almeno 8 caratteri.",
+                    errorMessage = newPasswordError ?: "Password non valida",
                     currentPasswordError = false,
                     newPasswordError = true,
                     confirmPasswordError = false
@@ -90,9 +77,13 @@ class ChangePasswordViewModel(
                 return
             }
 
-            if (currentState.newPassword != currentState.confirmPassword) {
+            val (isConfirmPasswordValid, confirmPasswordError) = ValidationUtils.validateConfirmPassword(
+                currentState.confirmPassword,
+                currentState.newPassword
+            )
+            if (!isConfirmPasswordValid) {
                 _state.update { it.copy(
-                    errorMessage = "Le password non corrispondono.",
+                    errorMessage = confirmPasswordError ?: "Le password non corrispondono",
                     currentPasswordError = false,
                     newPasswordError = false,
                     confirmPasswordError = true

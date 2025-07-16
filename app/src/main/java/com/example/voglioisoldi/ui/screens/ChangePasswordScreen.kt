@@ -121,14 +121,6 @@ fun ChangePasswordScreen(
                 isError = state.confirmPasswordError
             )
 
-            if (state.errorMessage.isEmpty()) {
-                Text(
-                    text = "La password deve essere lunga almeno 6 caratteri",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(

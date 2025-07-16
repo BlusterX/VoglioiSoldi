@@ -171,6 +171,27 @@ fun RegistrationScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        OutlinedTextField(
+            value = uiState.confirmPassword,
+            onValueChange = { viewModel.onConfirmPasswordChanged(it) },
+            label = { Text("Conferma Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            isError = !uiState.isConfirmPasswordValid && uiState.confirmPassword.isNotEmpty(),
+            supportingText = {
+                val error = uiState.confirmPasswordError
+                if (!uiState.isConfirmPasswordValid && error != null) {
+                    Text(
+                        text = error,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         TextButton(onClick = { navController.navigate(SoldiRoute.Login) }) {
             Text("Hai già un account? Login")
         }
@@ -180,10 +201,11 @@ fun RegistrationScreen(
         Button(
             onClick = { viewModel.register(context) },
             enabled = !uiState.isLoading && uiState.isNameValid && uiState.isSurnameValid &&
-                    uiState.isUsernameValid && uiState.isEmailValid && uiState.isPasswordValid &&
+                    uiState.isUsernameValid && uiState.isEmailValid &&
+                    uiState.isPasswordValid && uiState.isConfirmPasswordValid &&
                     uiState.name.isNotBlank() && uiState.surname.isNotBlank() &&
                     uiState.username.isNotBlank() && uiState.email.isNotBlank() &&
-                    uiState.password.isNotBlank(),
+                    uiState.password.isNotBlank() && uiState.confirmPassword.isNotBlank(),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(if (uiState.isLoading) "Registrazione..." else "Registrati")

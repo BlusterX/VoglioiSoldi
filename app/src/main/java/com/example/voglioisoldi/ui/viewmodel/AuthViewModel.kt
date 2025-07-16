@@ -23,6 +23,7 @@ import kotlin.random.Random
 data class AuthUiState(
     val username: String = "",
     val password: String = "",
+    val confirmPassword: String = "",
     val name: String = "",
     val surname: String = "",
     val email: String = "",
@@ -31,11 +32,13 @@ data class AuthUiState(
     val isUsernameValid: Boolean = true,
     val isEmailValid: Boolean = true,
     val isPasswordValid: Boolean = true,
+    val isConfirmPasswordValid: Boolean = true,
     val nameError: String? = null,
     val surnameError: String? = null,
     val usernameError: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null,
+    val confirmPasswordError: String? = null,
     val errorMessage: String? = null,
     val isLoading: Boolean = false,
     val loginSuccess: Boolean = false,
@@ -113,6 +116,19 @@ class AuthViewModel(
             password = newPassword,
             isPasswordValid = isValid,
             passwordError = error
+        )
+
+        if (_uiState.value.confirmPassword.isNotEmpty()) {
+            onConfirmPasswordChanged(_uiState.value.confirmPassword)
+        }
+    }
+
+    fun onConfirmPasswordChanged(newConfirmPassword: String) {
+        val (isValid, error) = ValidationUtils.validateConfirmPassword(newConfirmPassword, _uiState.value.password)
+        _uiState.value = _uiState.value.copy(
+            confirmPassword = newConfirmPassword,
+            isConfirmPasswordValid = isValid,
+            confirmPasswordError = error
         )
     }
 

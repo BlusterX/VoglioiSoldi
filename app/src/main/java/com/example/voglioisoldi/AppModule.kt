@@ -54,7 +54,7 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { SettingsViewModel(get()) }
     viewModel { GeneralSettingsViewModel(get(), get()) }
-    viewModel { AccountManagementViewModel(get()) }
+    viewModel { AccountManagementViewModel(get(), get()) }
     viewModel { NotificationViewModel(get()) }
     viewModel { AccountViewModel(get()) }
     viewModel { DetailsViewModel(get()) }

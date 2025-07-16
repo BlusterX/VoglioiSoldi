@@ -27,20 +27,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.voglioisoldi.data.database.entities.Account
+import com.example.voglioisoldi.ui.viewmodel.AccountWithBalance
 
 @Composable
-fun AccountItem(account: Account) {
+fun AccountItem(account: AccountWithBalance) {
     // TODO: usare valore attuale dell'account
     val formattedBalance = when {
-        account.balance > 0 -> "€%.2f".format(account.balance)
-        account.balance < 0 -> "-€%.2f".format(-account.balance)
+        account.actualBalance > 0 -> "€%.2f".format(account.actualBalance)
+        account.actualBalance < 0 -> "-€%.2f".format(-account.actualBalance)
         else -> "€ 0.00"
     }
 
     val balanceColor = when {
-        account.balance > 0 -> Color(0xFF388E3C) // Verde
-        account.balance < 0 -> Color(0xFFD32F2F) // Rosso
+        account.actualBalance > 0 -> Color(0xFF388E3C) // Verde
+        account.actualBalance < 0 -> Color(0xFFD32F2F) // Rosso
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
 
@@ -77,7 +77,7 @@ fun AccountItem(account: Account) {
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = account.type,
+                    text = account.account.type,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),

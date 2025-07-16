@@ -19,7 +19,7 @@ class RecurringTransactionWorker(
     workerParams: WorkerParameters
 ) : CoroutineWorker(appContext, workerParams), KoinComponent {
     private val transactionRepository: TransactionRepository by inject()
-    private val notificationRepository: NotificationRepository by inject()  // <-- aggiungi
+    private val notificationRepository: NotificationRepository by inject()
 
     @SuppressLint("DefaultLocale")
     override suspend fun doWork(): Result {
@@ -29,7 +29,8 @@ class RecurringTransactionWorker(
         for (tx in recurringTx) {
             val lastExec = tx.lastExecutionDate ?: tx.date
             val periodMillis = (tx.recurringPeriodMinutes ?: 0) * 60 * 1000L
-            if (periodMillis > 0 && now - lastExec >= periodMillis) {
+            //Fatto per test
+//            if (periodMillis > 0 && now - lastExec >= periodMillis) {
                 val newTx = tx.copy(
                     id = 0,
                     date = now,
@@ -47,7 +48,7 @@ class RecurringTransactionWorker(
                     .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setContentTitle(notifTitle)
                     .setContentText(notifMessage)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .build()
                 notificationManager.notify((now + Random.nextInt(1000)).toInt(), notif)
 
@@ -62,7 +63,7 @@ class RecurringTransactionWorker(
                     )
                 )
             }
-        }
+        //}
         return Result.success()
     }
 }

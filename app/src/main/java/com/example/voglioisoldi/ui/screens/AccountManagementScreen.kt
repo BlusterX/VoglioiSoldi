@@ -98,7 +98,7 @@ fun AccountManagementScreen(
                     }
                 }
 
-                state.accounts.isEmpty() -> {
+                state.accountsWithBalance.isEmpty() -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -144,8 +144,8 @@ fun AccountManagementScreen(
                             Spacer(modifier = Modifier.height(8.dp))
                         }
 
-                        items(state.accounts) { account ->
-                            AccountItem(account = account)
+                        items(state.accountsWithBalance) { item ->
+                            AccountItem(account = item)
                         }
 
                         item {
